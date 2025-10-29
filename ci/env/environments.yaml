@@ -1,0 +1,205 @@
+# Environment Catalog - Centralized environment configuration
+# Maps stages to cloud providers, regions, endpoints, orchestrators
+
+environments:
+  dev:
+    stage: development
+    cloud: azure
+    region: westeurope
+    
+    orchestrator:
+      type: azure_data_factory
+      factory_name: dev-adf-001
+      resource_group: dev-data-rg
+      subscription_id: "{{vault:azure_subscription_dev}}"
+      
+    storage:
+      type: azure_blob
+      account: devdatalake001
+      container: raw
+      path_prefix: /dev
+      connection_string: "{{vault:dev_storage_connection}}"
+      
+    compute:
+      type: azure_synapse
+      workspace: dev-synapse-ws
+      spark_pool: dev-spark-small
+      sql_pool: dev-sql-pool
+      
+    data_quality:
+      enabled: true
+      min_row_count: 1
+      max_staleness_hours: 48
+      
+    secrets:
+      vault_provider: azure_keyvault
+      vault_name: dev-data-vault
+      
+    medallion_layers:
+      bronze: dev_bronze
+      silver: dev_silver
+      gold: dev_gold
+      
+    tags:
+      environment: development
+      cost_center: engineering
+      data_classification: internal
+      
+  sit:
+    stage: system_integration_testing
+    cloud: azure
+    region: westeurope
+    
+    orchestrator:
+      type: azure_data_factory
+      factory_name: sit-adf-001
+      resource_group: sit-data-rg
+      subscription_id: "{{vault:azure_subscription_sit}}"
+      
+    storage:
+      type: azure_blob
+      account: sitdatalake001
+      container: raw
+      path_prefix: /sit
+      connection_string: "{{vault:sit_storage_connection}}"
+      
+    compute:
+      type: azure_synapse
+      workspace: sit-synapse-ws
+      spark_pool: sit-spark-medium
+      sql_pool: sit-sql-pool
+      
+    data_quality:
+      enabled: true
+      min_row_count: 100
+      max_staleness_hours: 24
+      
+    secrets:
+      vault_provider: azure_keyvault
+      vault_name: sit-data-vault
+      
+    medallion_layers:
+      bronze: sit_bronze
+      silver: sit_silver
+      gold: sit_gold
+      
+    tags:
+      environment: sit
+      cost_center: engineering
+      data_classification: internal
+      
+  uat:
+    stage: user_acceptance_testing
+    cloud: azure
+    region: westeurope
+    
+    orchestrator:
+      type: azure_data_factory
+      factory_name: uat-adf-001
+      resource_group: uat-data-rg
+      subscription_id: "{{vault:azure_subscription_uat}}"
+      
+    storage:
+      type: azure_blob
+      account: uatdatalake001
+      container: raw
+      path_prefix: /uat
+      connection_string: "{{vault:uat_storage_connection}}"
+      
+    compute:
+      type: azure_synapse
+      workspace: uat-synapse-ws
+      spark_pool: uat-spark-large
+      sql_pool: uat-sql-pool
+      
+    data_quality:
+      enabled: true
+      min_row_count: 1000
+      max_staleness_hours: 12
+      
+    secrets:
+      vault_provider: azure_keyvault
+      vault_name: uat-data-vault
+      
+    medallion_layers:
+      bronze: uat_bronze
+      silver: uat_silver
+      gold: uat_gold
+      
+    tags:
+      environment: uat
+      cost_center: operations
+      data_classification: confidential
+      
+  prod:
+    stage: production
+    cloud: azure
+    region: westeurope
+    
+    orchestrator:
+      type: azure_data_factory
+      factory_name: prod-adf-001
+      resource_group: prod-data-rg
+      subscription_id: "{{vault:azure_subscription_prod}}"
+      
+    storage:
+      type: azure_blob
+      account: proddatalake001
+      container: raw
+      path_prefix: /prod
+      connection_string: "{{vault:prod_storage_connection}}"
+      
+    compute:
+      type: azure_synapse
+      workspace: prod-synapse-ws
+      spark_pool: prod-spark-xlarge
+      sql_pool: prod-sql-pool
+      
+    data_quality:
+      enabled: true
+      min_row_count: 10000
+      max_staleness_hours: 2
+      
+    secrets:
+      vault_provider: azure_keyvault
+      vault_name: prod-data-vault
+      
+    medallion_layers:
+      bronze: prod_bronze
+      silver: prod_silver
+      gold: prod_gold
+      
+    tags:
+      environment: production
+      cost_center: operations
+      data_classification: highly_confidential
+      compliance: sox_compliant
+      
+    high_availability:
+      enabled: true
+      disaster_recovery_region: northeurope
+      rpo_minutes: 15
+      rto_minutes: 60
+
+# Multi-cloud example (AWS)
+  prod_aws:
+    stage: production
+    cloud: aws
+    region: eu-west-1
+    
+    orchestrator:
+      type: aws_step_functions
+      state_machine_arn: "arn:aws:states:eu-west-1:123456789:stateMachine:prod-data-pipeline"
+      
+    storage:
+      type: s3
+      bucket: prod-data-lake
+      prefix: /raw
+      
+    compute:
+      type: aws_glue
+      job_name: prod-glue-job
+      
+    secrets:
+      vault_provider: aws_secrets_manager
+      secret_name: prod/data/credentials

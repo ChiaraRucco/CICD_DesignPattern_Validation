@@ -1,0 +1,16 @@
+{
+  "name": "customer_orders_pipeline",
+  "properties": {
+    "activities": [
+      {
+        "name": "Extract",
+        "type": "Copy"
+      },
+      {
+        "name": "Transform",
+        "type": "DataFlow"
+      }
+    ],
+    "version": "2.1.3"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "component": {
+    "name": "customer_orders_pipeline",
+    "type": "adf_pipeline",
+    "version": "1.0.0",
+    "commit_sha": "unknown"
+  },
+  "environment": {
+    "name": "dev",
+    "cloud": "azure",
+    "region": "westeurope",
+    "stage": "development"
+  },
+  "pipeline": {
+    "version": "1.0.0",
+    "pipeline_hash": "4abb66bba2c17df8e8966948e123180266e45e69934800f4dd41046236517c04",
+    "promotion_hash": "3c4b7c8357c0de48de45888d56a0ef92a7da5b56d0d95637008be0951f24c28e"
+  },
+  "stages": {
+    "binding": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.529388",
+      "environment_snapshot": {
+        "stage": "development",
+        "cloud": "azure",
+        "region": "westeurope",
+        "orchestrator": {
+          "type": "azure_data_factory",
+          "factory_name": "dev-adf-001",
+          "resource_group": "dev-data-rg",
+          "subscription_id": "{{vault:azure_subscription_dev}}"
+        },
+        "storage": {
+          "type": "azure_blob",
+          "account": "devdatalake001",
+          "container": "raw",
+          "path_prefix": "/dev",
+          "connection_string": "{{vault:dev_storage_connection}}"
+        },
+        "compute": {
+          "type": "azure_synapse",
+          "workspace": "dev-synapse-ws",
+          "spark_pool": "dev-spark-small",
+          "sql_pool": "dev-sql-pool"
+        },
+        "data_quality": {
+          "enabled": true,
+          "min_row_count": 1,
+          "max_staleness_hours": 48
+        },
+        "secrets": {
+          "vault_provider": "azure_keyvault",
+          "vault_name": "dev-data-vault"
+        },
+        "medallion_layers": {
+          "bronze": "dev_bronze",
+          "silver": "dev_silver",
+          "gold": "dev_gold"
+        },
+        "tags": {
+          "environment": "development",
+          "cost_center": "engineering",
+          "data_classification": "internal"
+        }
+      }
+    },
+    "build": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.529638",
+      "component_type": "adf_pipeline",
+      "artifact_version": "1.0.0",
+      "artifact_hash": "7d390cbe26d149dbe699470309ef052607f3a28fb479bb1d96ca57b4dfb42499"
+    },
+    "validation": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.529736",
+      "checks_passed": [
+        "schema",
+        "dependencies",
+        "compatibility"
+      ]
+    },
+    "deployment": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.529809",
+      "cloud": "azure",
+      "region": "westeurope"
+    },
+    "smoke_test": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.529912",
+      "test_type": "row_count_check",
+      "result": {
+        "passed": true,
+        "message": "Row count: 1924 (expected min: 1)"
+      }
+    },
+    "gate_evaluation": {
+      "status": "success",
+      "timestamp": "2025-10-28T19:59:25.530080",
+      "promotion_path": "dev_to_sit",
+      "gates_evaluated": 3,
+      "gates_passed": 3,
+      "eligible_for_promotion": true,
+      "gate_results": [
+        {
+          "gate_name": "smoke_tests_passed",
+          "gate_type": "automated",
+          "passed": true,
+          "message": "Passed"
+        },
+        {
+          "gate_name": "unit_tests_passed",
+          "gate_type": "automated",
+          "passed": true,
+          "message": "Passed"
+        },
+        {
+          "gate_name": "code_review_approved",
+          "gate_type": "manual",
+          "passed": true,
+          "message": "Passed"
+        }
+      ]
+    }
+  },
+  "outcomes": {
+    "overall_status": "success",
+    "deployment_timestamp": "2025-10-28T19:59:25.530276",
+    "total_stages": 7,
+    "successful_stages": 6
+  }
+}

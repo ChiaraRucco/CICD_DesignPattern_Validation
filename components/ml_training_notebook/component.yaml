@@ -1,0 +1,13 @@
+artifact:
+  path: ./artifacts/ml_training_notebook.py
+  type: notebook
+description: Databricks notebook for testing
+name: ml_training_notebook
+parameters:
+  cluster_id: test-cluster
+  timeout_seconds: 3600
+smoke_test:
+  type: notebook_run
+  validate_output: true
+type: databricks_notebook
+version: 1.0.0

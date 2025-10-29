@@ -1,0 +1,38 @@
+{
+  "component_path": "components/customer_orders_pipeline/component.yaml",
+  "environments": [
+    "dev",
+    "sit",
+    "uat",
+    "prod"
+  ],
+  "deployments": {
+    "dev": {
+      "component_path": "components/customer_orders_pipeline/component.yaml",
+      "environment": "dev",
+      "start_time": "2025-10-28T19:59:26.248752",
+      "stages": {
+        "pre_deployment": "success",
+        "deployment": "success",
+        "smoke_test": "success",
+        "gate_evaluation": "passed",
+        "provenance": "recorded"
+      },
+      "artifact_location": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
+      "status": "success",
+      "end_time": "2025-10-28T19:59:26.286060",
+      "eligible_for_promotion": true
+    },
+    "sit": {
+      "component": "customer_orders_pipeline",
+      "from_environment": "dev",
+      "to_environment": "sit",
+      "start_time": "2025-10-28T19:59:26.287735",
+      "status": "blocked",
+      "message": "Promotion blocked by gates"
+    }
+  },
+  "start_time": "2025-10-28T19:59:26.248615",
+  "status": "failed",
+  "stopped_at": "sit"
+}

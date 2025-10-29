@@ -1,0 +1,45 @@
+# Mix-in: Notifications
+# Reusable notification logic for deployment events
+
+notifications:
+  slack:
+    enabled: true
+    channels:
+      - name: "#data-deployments"
+        events: ["deployment_started", "deployment_completed", "deployment_failed"]
+      - name: "#data-alerts"
+        events: ["smoke_test_failed", "gate_evaluation_failed"]
+    
+    message_templates:
+      deployment_started: |
+        🚀 Deployment Started
+        Component: {{component.name}}
+        Environment: {{environment.name}}
+        Version: {{artifact.version}}
+        Triggered by: {{deployment.user}}
+        
+      deployment_completed: |
+        ✅ Deployment Successful
+        Component: {{component.name}}
+        Environment: {{environment.name}}
+        Duration: {{deployment.duration}}
+        
+      deployment_failed: |
+        ❌ Deployment Failed
+        Component: {{component.name}}
+        Environment: {{environment.name}}
+        Stage: {{failure.stage}}
+        Error: {{failure.message}}
+  
+  email:
+    enabled: true
+    recipients:
+      - data-platform-team@company.com
+    events: ["deployment_failed", "gate_evaluation_failed"]
+
+  webhook:
+    enabled: true
+    endpoints:
+      - url: "https://monitoring.company.com/api/deployments"
+        events: ["deployment_completed", "deployment_failed"]
+        method: POST

@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-10-29T14:07:44.580217",
+  "total_duration": 9.022724866867065,
+  "experiments_run": 11,
+  "successful": 10,
+  "failed": 1,
+  "results": [
+    {
+      "id": 1,
+      "name": "Stage Coverage",
+      "success": true,
+      "duration": 0.43598008155822754,
+      "category": "Core Pipeline"
+    },
+    {
+      "id": 2,
+      "name": "Configuration Drift",
+      "success": true,
+      "duration": 0.14095020294189453,
+      "category": "Core Pipeline"
+    },
+    {
+      "id": 3,
+      "name": "Deployment Velocity",
+      "success": true,
+      "duration": 0.6805770397186279,
+      "category": "Core Pipeline"
+    },
+    {
+      "id": 4,
+      "name": "Late Binding",
+      "success": true,
+      "duration": 0.14565706253051758,
+      "category": "Core Pipeline"
+    },
+    {
+      "id": 5,
+      "name": "Provenance Capture",
+      "success": true,
+      "duration": 0.2954890727996826,
+      "category": "Core Pipeline"
+    },
+    {
+      "id": 6,
+      "name": "Multi-Environment Deployment",
+      "success": false,
+      "duration": 0.4343259334564209,
+      "category": "Multi-Environment"
+    },
+    {
+      "id": 7,
+      "name": "Failure & Rollback",
+      "success": true,
+      "duration": 0.64599609375,
+      "category": "Multi-Environment"
+    },
+    {
+      "id": 8,
+      "name": "Environment Inspection",
+      "success": true,
+      "duration": 0.19683194160461426,
+      "category": "Multi-Environment"
+    },
+    {
+      "id": 9,
+      "name": "Mix-in Composition",
+      "success": true,
+      "duration": 0.478834867477417,
+      "category": "Advanced Features"
+    },
+    {
+      "id": 10,
+      "name": "Component Type Branching",
+      "success": true,
+      "duration": 0.4098470211029053,
+      "category": "Advanced Features"
+    },
+    {
+      "id": 11,
+      "name": "Complexity Metrics",
+      "success": true,
+      "duration": 0.11540675163269043,
+      "category": "Advanced Features"
+    }
+  ]
+}

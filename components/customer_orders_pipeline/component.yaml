@@ -1,0 +1,13 @@
+artifact:
+  path: ./artifacts/customer_orders_adf.json
+  type: adf_json
+description: Azure Data Factory pipeline for testing
+name: customer_orders_pipeline
+parameters:
+  schedule: 0 * * * *
+  timeout_minutes: 30
+smoke_test:
+  expected_min: 1
+  type: row_count_check
+type: adf_pipeline
+version: 1.0.0

@@ -1,0 +1,139 @@
+name: inventory_sync_pipeline
+version: 1.0.0
+type: adf_pipeline
+description: "Real-time inventory synchronization pipeline from ERP to data lake"
+
+# Source information
+source:
+  repository: https://github.com/your-org/data-pipelines
+  commit_sha: abc123def456
+  branch: main
+
+# Component-specific configuration
+artifact:
+  type: adf_json
+  path: ./artifacts/inventory_sync_pipeline.json
+
+parameters:
+  schedule: "0 */4 * * *"  # Every 4 hours
+  timeout_minutes: 45
+  max_retries: 3
+  batch_size: 5000
+  
+  # Data source configuration
+  source_system:
+    type: erp
+    connection: "{{vault:erp_connection_string}}"
+    tables:
+      - products
+      - inventory_levels
+      - warehouse_locations
+  
+  # Target configuration
+  target:
+    storage_account: "{{env:storage_account}}"
+    container: raw
+    format: parquet
+    partitioning: year/month/day
+
+# Dependencies - must be deployed first
+depends_on:
+  - name: master_data_pipeline
+    min_version: 2.0.0
+  - name: data_quality_framework
+    min_version: 1.5.0
+
+# Environment-specific overrides (optional)
+environment_overrides:
+  dev:
+    parameters:
+      batch_size: 100  # Smaller batches in dev
+      schedule: "0 9 * * *"  # Once per day in dev
+  
+  prod:
+    parameters:
+      batch_size: 10000  # Larger batches in prod
+      max_retries: 5  # More retries in prod
+
+# Smoke test configuration
+smoke_test:
+  type: row_count_check
+  table: inventory_sync.products
+  expected_min: 1000
+  timeout_seconds: 300
+
+# Data quality checks (uses data_quality mix-in)
+data_quality:
+  enabled: true
+  checks:
+    - name: inventory_levels_positive
+      type: sql
+      query: "SELECT COUNT(*) FROM inventory_levels WHERE quantity < 0"
+      expected: 0
+    - name: products_have_sku
+      type: not_null
+      column: product_sku
+      table: products
+
+# Notifications (uses notifications mix-in)
+notifications:
+  enabled: true
+  on_success:
+    - slack: "#data-engineering"
+  on_failure:
+    - slack: "#data-alerts"
+    - email: data-team@company.com
+    - pagerduty: true
+
+# Tags for organization
+tags:
+  team: data-engineering
+  domain: supply-chain
+  criticality: high
+  cost-center: engineering
+
+# Monitoring and observability
+monitoring:
+  metrics:
+    - pipeline_duration
+    - rows_processed
+    - error_rate
+  alerts:
+    - type: duration
+      threshold: 60  # minutes
+      severity: warning
+    - type: failure_rate
+      threshold: 0.05  # 5%
+      severity: critical
+
+# Documentation
+documentation:
+  readme: |
+    # Inventory Sync Pipeline
+    
+    This pipeline synchronizes inventory data from the ERP system to the data lake.
+    
+    ## Data Flow
+    1. Extract data from ERP tables (products, inventory_levels, warehouse_locations)
+    2. Transform to common schema
+    3. Load to data lake in parquet format
+    4. Run data quality checks
+    5. Update metadata catalog
+    
+    ## Schedule
+    - Dev: Once daily at 9 AM
+    - Prod: Every 4 hours
+    
+    ## Monitoring
+    - Pipeline runs are monitored in Azure Monitor
+    - Alerts sent to #data-alerts Slack channel
+    - PagerDuty escalation for critical failures
+    
+    ## Troubleshooting
+    - Check ERP connection if extraction fails
+    - Verify storage account permissions if load fails
+    - Review data quality results in logs
+  
+  runbook_url: https://wiki.company.com/data/inventory-sync-runbook
+  owner: data-engineering@company.com
+  oncall: https://pagerduty.com/schedules/data-engineering

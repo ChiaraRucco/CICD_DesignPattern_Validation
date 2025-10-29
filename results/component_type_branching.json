@@ -1,0 +1,65 @@
+{
+  "test_results": [
+    {
+      "component_type": "adf_pipeline",
+      "component_name": "customer_orders_pipeline",
+      "expected_branches": {
+        "build": "build_adf_json",
+        "validation": "validate_adf_schema",
+        "deployment": "deploy_to_adf",
+        "smoke_test": "test_pipeline_run"
+      },
+      "actual_branches": {
+        "build": "build_adf_json",
+        "validation": "validate_adf_schema",
+        "deployment": "deploy_to_adf",
+        "smoke_test": "test_pipeline_run"
+      },
+      "branching_correct": true,
+      "deployment_status": "success"
+    },
+    {
+      "component_type": "dbt_project",
+      "component_name": "analytics_dbt",
+      "expected_branches": {
+        "build": "build_dbt_artifacts",
+        "validation": "validate_dbt_models",
+        "deployment": "deploy_dbt_to_warehouse",
+        "smoke_test": "test_dbt_models"
+      },
+      "actual_branches": {
+        "build": "build_dbt_artifacts",
+        "validation": "validate_dbt_models",
+        "deployment": "deploy_dbt_to_warehouse",
+        "smoke_test": "test_dbt_models"
+      },
+      "branching_correct": true,
+      "deployment_status": "success"
+    },
+    {
+      "component_type": "databricks_notebook",
+      "component_name": "ml_training_notebook",
+      "expected_branches": {
+        "build": "export_notebook",
+        "validation": "validate_notebook_syntax",
+        "deployment": "import_to_databricks",
+        "smoke_test": "execute_notebook_test"
+      },
+      "actual_branches": {
+        "build": "export_notebook",
+        "validation": "validate_notebook_syntax",
+        "deployment": "import_to_databricks",
+        "smoke_test": "execute_notebook_test"
+      },
+      "branching_correct": true,
+      "deployment_status": "success"
+    }
+  ],
+  "validations": {
+    "all_component_types_deploy_successfully": true,
+    "branching_rules_applied_correctly": true,
+    "different_methods_per_component_type": true,
+    "same_pipeline_handles_all_types": true
+  },
+  "all_passed": true
+}

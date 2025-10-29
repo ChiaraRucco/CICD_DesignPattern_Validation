@@ -1,0 +1,40 @@
+# Mix-in: Data Quality Checks
+# Reusable data quality validation logic
+
+data_quality_checks:
+  row_count:
+    enabled: true
+    min_rows: 1
+    max_rows: null
+    
+  freshness:
+    enabled: true
+    max_staleness_hours: 24
+    timestamp_column: "updated_at"
+    
+  schema_validation:
+    enabled: true
+    enforce_types: true
+    allow_null_columns: []
+    required_columns: []
+    
+  uniqueness:
+    enabled: true
+    unique_columns:
+      - "id"
+      - "transaction_id"
+    
+  referential_integrity:
+    enabled: true
+    foreign_keys: []
+    
+  custom_rules:
+    - name: "amount_positive"
+      sql: "SELECT COUNT(*) FROM {{table}} WHERE amount < 0"
+      threshold: 0
+      severity: "error"
+      
+    - name: "valid_status"
+      sql: "SELECT COUNT(*) FROM {{table}} WHERE status NOT IN ('pending', 'completed', 'cancelled')"
+      threshold: 0
+      severity: "error"

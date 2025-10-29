@@ -1,0 +1,137 @@
+{
+  "scenarios": [
+    {
+      "component": "customer_orders_pipeline",
+      "environment": "dev",
+      "mixins_requested": [],
+      "mixins_applied": [],
+      "deployment_status": "success",
+      "mixin_results": {}
+    },
+    {
+      "component": "customer_orders_pipeline",
+      "environment": "dev",
+      "mixins_requested": [
+        "notifications"
+      ],
+      "mixins_applied": [
+        "notifications"
+      ],
+      "deployment_status": "success",
+      "mixin_results": {
+        "notifications": {
+          "slack": {
+            "status": "sent",
+            "channels": [
+              "#data-deployments",
+              "#data-alerts"
+            ],
+            "message": "Deployment success: customer_orders_pipeline to dev"
+          },
+          "email": {
+            "status": "sent",
+            "recipients": [
+              "data-platform-team@company.com"
+            ],
+            "subject": "Deployment success: customer_orders_pipeline"
+          },
+          "webhook": {
+            "status": "sent",
+            "endpoints_called": 1
+          }
+        }
+      }
+    },
+    {
+      "component": "customer_orders_pipeline",
+      "environment": "dev",
+      "mixins_requested": [
+        "data_quality"
+      ],
+      "mixins_applied": [
+        "data_quality"
+      ],
+      "deployment_status": "success",
+      "mixin_results": {
+        "data_quality": {
+          "row_count": {
+            "status": "passed",
+            "actual_rows": 509,
+            "min_required": 1
+          },
+          "freshness": {
+            "status": "passed",
+            "actual_staleness_hours": 5,
+            "max_allowed_hours": 24
+          },
+          "schema": {
+            "status": "passed",
+            "columns_validated": 15,
+            "schema_matches": true
+          }
+        }
+      }
+    },
+    {
+      "component": "customer_orders_pipeline",
+      "environment": "dev",
+      "mixins_requested": [
+        "notifications",
+        "data_quality"
+      ],
+      "mixins_applied": [
+        "notifications",
+        "data_quality"
+      ],
+      "deployment_status": "success",
+      "mixin_results": {
+        "notifications": {
+          "slack": {
+            "status": "sent",
+            "channels": [
+              "#data-deployments",
+              "#data-alerts"
+            ],
+            "message": "Deployment success: customer_orders_pipeline to dev"
+          },
+          "email": {
+            "status": "sent",
+            "recipients": [
+              "data-platform-team@company.com"
+            ],
+            "subject": "Deployment success: customer_orders_pipeline"
+          },
+          "webhook": {
+            "status": "sent",
+            "endpoints_called": 1
+          }
+        },
+        "data_quality": {
+          "row_count": {
+            "status": "passed",
+            "actual_rows": 509,
+            "min_required": 1
+          },
+          "freshness": {
+            "status": "passed",
+            "actual_staleness_hours": 5,
+            "max_allowed_hours": 24
+          },
+          "schema": {
+            "status": "passed",
+            "columns_validated": 15,
+            "schema_matches": true
+          }
+        }
+      }
+    }
+  ],
+  "validations": {
+    "mix_ins_load_successfully": true,
+    "notifications_work_when_enabled": true,
+    "data_quality_works_when_enabled": true,
+    "mix_ins_compose_without_conflict": true,
+    "mix_ins_are_optional": true
+  },
+  "all_passed": true
+}

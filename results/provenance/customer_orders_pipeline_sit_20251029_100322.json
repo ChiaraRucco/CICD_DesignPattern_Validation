@@ -1,0 +1,133 @@
+{
+  "component": {
+    "name": "customer_orders_pipeline",
+    "type": "adf_pipeline",
+    "version": "1.0.0",
+    "commit_sha": "unknown"
+  },
+  "environment": {
+    "name": "sit",
+    "cloud": "azure",
+    "region": "westeurope",
+    "stage": "system_integration_testing"
+  },
+  "pipeline": {
+    "version": "1.0.0",
+    "pipeline_hash": "4abb66bba2c17df8e8966948e123180266e45e69934800f4dd41046236517c04",
+    "promotion_hash": "3c4b7c8357c0de48de45888d56a0ef92a7da5b56d0d95637008be0951f24c28e"
+  },
+  "stages": {
+    "binding": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.755928",
+      "environment_snapshot": {
+        "stage": "system_integration_testing",
+        "cloud": "azure",
+        "region": "westeurope",
+        "orchestrator": {
+          "type": "azure_data_factory",
+          "factory_name": "sit-adf-001",
+          "resource_group": "sit-data-rg",
+          "subscription_id": "{{vault:azure_subscription_sit}}"
+        },
+        "storage": {
+          "type": "azure_blob",
+          "account": "sitdatalake001",
+          "container": "raw",
+          "path_prefix": "/sit",
+          "connection_string": "{{vault:sit_storage_connection}}"
+        },
+        "compute": {
+          "type": "azure_synapse",
+          "workspace": "sit-synapse-ws",
+          "spark_pool": "sit-spark-medium",
+          "sql_pool": "sit-sql-pool"
+        },
+        "data_quality": {
+          "enabled": true,
+          "min_row_count": 100,
+          "max_staleness_hours": 24
+        },
+        "secrets": {
+          "vault_provider": "azure_keyvault",
+          "vault_name": "sit-data-vault"
+        },
+        "medallion_layers": {
+          "bronze": "sit_bronze",
+          "silver": "sit_silver",
+          "gold": "sit_gold"
+        },
+        "tags": {
+          "environment": "sit",
+          "cost_center": "engineering",
+          "data_classification": "internal"
+        }
+      }
+    },
+    "build": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.756582",
+      "component_type": "adf_pipeline",
+      "artifact_version": "1.0.0",
+      "artifact_hash": "7d390cbe26d149dbe699470309ef052607f3a28fb479bb1d96ca57b4dfb42499"
+    },
+    "validation": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.757005",
+      "checks_passed": [
+        "schema",
+        "dependencies",
+        "compatibility"
+      ]
+    },
+    "deployment": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.764033",
+      "cloud": "azure",
+      "region": "westeurope"
+    },
+    "smoke_test": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.764236",
+      "test_type": "row_count_check",
+      "result": {
+        "passed": true,
+        "message": "Row count: 1924 (expected min: 1)"
+      }
+    },
+    "gate_evaluation": {
+      "status": "success",
+      "timestamp": "2025-10-29T10:03:22.764849",
+      "promotion_path": "sit_to_uat",
+      "gates_evaluated": 3,
+      "gates_passed": 3,
+      "eligible_for_promotion": true,
+      "gate_results": [
+        {
+          "gate_name": "integration_tests_passed",
+          "gate_type": "automated",
+          "passed": true,
+          "message": "Passed"
+        },
+        {
+          "gate_name": "data_quality_checks",
+          "gate_type": "automated",
+          "passed": true,
+          "message": "Passed"
+        },
+        {
+          "gate_name": "tech_lead_approval",
+          "gate_type": "manual",
+          "passed": true,
+          "message": "Passed"
+        }
+      ]
+    }
+  },
+  "outcomes": {
+    "overall_status": "success",
+    "deployment_timestamp": "2025-10-29T10:03:22.765225",
+    "total_stages": 7,
+    "successful_stages": 6
+  }
+}

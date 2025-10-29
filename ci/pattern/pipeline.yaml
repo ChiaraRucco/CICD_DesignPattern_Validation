@@ -1,0 +1,89 @@
+# Pipeline Template - Generic deployment pipeline
+# Defines ordered steps: Binding → Build → Validation → Deployment → Smoke Test → Gates
+
+name: eadf_standard_pipeline
+version: "1.0.0"
+description: "Standard EADF deployment pipeline with all stages"
+
+stages:
+  - name: binding
+    description: "Bind environment-specific parameters at deployment time"
+    steps:
+      - resolve_environment_params
+      - inject_credentials
+      - validate_bindings
+    
+  - name: build
+    description: "Package artifact into consistent reusable unit"
+    steps:
+      - checkout_artifact
+      - package_component
+      - version_artifact
+    dispatch_by: component.type  # Different build steps per component type
+    
+  - name: validation
+    description: "Check artifact against schema and configuration rules"
+    steps:
+      - validate_schema
+      - check_dependencies
+      - verify_compatibility
+    fail_fast: true
+    
+  - name: deployment
+    description: "Instantiate artifact into target environment"
+    steps:
+      - prepare_target_environment
+      - deploy_artifact
+      - configure_monitoring
+    dispatch_by: 
+      - component.type
+      - environment.cloud
+    
+  - name: smoke_test
+    description: "Lightweight verification in target environment"
+    steps:
+      - execute_sample_query
+      - check_pipeline_status
+      - verify_connectivity
+    timeout_minutes: 5
+    
+  - name: gate_evaluation
+    description: "Evaluate promotion policies for next stage"
+    steps:
+      - check_quality_thresholds
+      - verify_approvals
+      - evaluate_promotion_rules
+    
+  - name: provenance
+    description: "Record deployment metadata for auditability"
+    steps:
+      - capture_artifact_version
+      - record_bindings
+      - log_outcomes
+      - store_lineage
+
+# Branching rules based on component type
+branching:
+  adf_pipeline:
+    build: build_adf_json
+    validation: validate_adf_schema
+    deployment: deploy_to_adf
+    smoke_test: test_pipeline_run
+    
+  dbt_project:
+    build: build_dbt_artifacts
+    validation: validate_dbt_models
+    deployment: deploy_dbt_to_warehouse
+    smoke_test: test_dbt_models
+    
+  databricks_notebook:
+    build: export_notebook
+    validation: validate_notebook_syntax
+    deployment: import_to_databricks
+    smoke_test: execute_notebook_test
+
+# Error handling
+on_failure:
+  - capture_logs
+  - notify_team
+  - preserve_state_for_debugging

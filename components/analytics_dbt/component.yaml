@@ -1,0 +1,15 @@
+artifact:
+  path: ./artifacts/analytics_dbt/
+  type: dbt_project
+description: dbt project for testing
+name: analytics_dbt
+parameters:
+  models:
+  - orders
+  - customers
+  target: prod
+smoke_test:
+  run_tests: true
+  type: dbt_test
+type: dbt_project
+version: 1.0.0

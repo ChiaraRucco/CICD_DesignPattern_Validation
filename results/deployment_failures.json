@@ -1,0 +1,67 @@
+{
+  "smoke_test_failure": {
+    "component": "customer_orders_pipeline",
+    "from_environment": "dev",
+    "to_environment": "sit",
+    "start_time": "2025-10-29T14:07:40.956043",
+    "status": "blocked",
+    "message": "Promotion blocked by gates"
+  },
+  "gate_failure": {
+    "component": "customer_orders_pipeline",
+    "from_environment": "sit",
+    "to_environment": "uat",
+    "start_time": "2025-10-29T14:07:41.081937",
+    "status": "blocked",
+    "message": "Promotion blocked by gates"
+  },
+  "deployment_failure": {
+    "component_path": "components/customer_orders_pipeline/component.yaml",
+    "environment": "prod",
+    "start_time": "2025-10-29T14:07:41.094343",
+    "stages": {
+      "pre_deployment": "success"
+    },
+    "status": "failed",
+    "error": "Simulated deployment failure",
+    "end_time": "2025-10-29T14:07:41.227689"
+  },
+  "pipeline_failure": {
+    "component_path": "components/customer_orders_pipeline/component.yaml",
+    "environments": [
+      "dev",
+      "sit",
+      "uat",
+      "prod"
+    ],
+    "deployments": {
+      "dev": {
+        "component_path": "components/customer_orders_pipeline/component.yaml",
+        "environment": "dev",
+        "start_time": "2025-10-29T14:07:41.228326",
+        "stages": {
+          "pre_deployment": "success",
+          "deployment": "success",
+          "smoke_test": "success",
+          "gate_evaluation": "passed",
+          "provenance": "recorded"
+        },
+        "artifact_location": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
+        "status": "success",
+        "end_time": "2025-10-29T14:07:41.296593",
+        "eligible_for_promotion": true
+      },
+      "sit": {
+        "component": "customer_orders_pipeline",
+        "from_environment": "dev",
+        "to_environment": "sit",
+        "start_time": "2025-10-29T14:07:41.305387",
+        "status": "blocked",
+        "message": "Promotion blocked by gates"
+      }
+    },
+    "start_time": "2025-10-29T14:07:41.228233",
+    "status": "failed",
+    "stopped_at": "sit"
+  }
+}

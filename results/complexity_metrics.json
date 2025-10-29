@@ -1,0 +1,65 @@
+{
+  "eadf_resolver": {
+    "total_lines": 579,
+    "code_lines": 431,
+    "comment_lines": 42,
+    "blank_lines": 106,
+    "classes": 1,
+    "functions": 31,
+    "complexity": 65,
+    "logic_density": 0.15081206496519722,
+    "file_type": "python",
+    "approach": "EADF Resolver"
+  },
+  "eadf_configuration": {
+    "total_lines": 398,
+    "code_lines": 319,
+    "comment_lines": 10,
+    "blank_lines": 69,
+    "file_count": 4,
+    "approach": "EADF Configuration"
+  },
+  "baseline": {
+    "approach": "Environment-Specific Scripts",
+    "file_type": "bash/python",
+    "environments": 4,
+    "lines_per_script": 400,
+    "total_lines": 1600,
+    "code_lines": 1400,
+    "duplicated_lines": 1200,
+    "complexity_per_script": 45,
+    "complexity": 180,
+    "logic_density": 0.12857142857142856,
+    "maintenance_burden": "HIGH - separate script per environment"
+  },
+  "jenkins": {
+    "approach": "Jenkins Pipeline",
+    "file_type": "groovy",
+    "total_lines": 800,
+    "code_lines": 650,
+    "complexity": 85,
+    "logic_density": 0.13076923076923078,
+    "shared_libraries": 3,
+    "maintenance_burden": "MEDIUM-HIGH - Groovy learning curve, complex DSL"
+  },
+  "github_actions": {
+    "approach": "GitHub Actions",
+    "file_type": "yaml + scripts",
+    "workflow_lines": 300,
+    "script_lines": 250,
+    "total_lines": 550,
+    "code_lines": 450,
+    "complexity": 55,
+    "logic_density": 0.12222222222222222,
+    "maintenance_burden": "MEDIUM - YAML + scripts split"
+  },
+  "validations": {
+    "resolver_is_small": true,
+    "resolver_is_less_complex_than_baseline": false,
+    "total_loc_reduced_vs_baseline": true,
+    "zero_duplication": true,
+    "simpler_than_jenkins": true,
+    "simpler_than_github_actions": false
+  },
+  "all_passed": false
+}

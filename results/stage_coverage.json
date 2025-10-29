@@ -1,0 +1,42 @@
+{
+  "stages": [
+    {
+      "name": "binding",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "build",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "validation",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "deployment",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "smoke_test",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "gate_evaluation",
+      "status": "success",
+      "executed": true
+    },
+    {
+      "name": "provenance",
+      "status": "unknown",
+      "executed": false
+    }
+  ],
+  "coverage_percent": 85.71428571428571,
+  "total_stages": 7,
+  "executed_stages": 6
+}

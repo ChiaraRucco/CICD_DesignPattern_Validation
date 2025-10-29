@@ -1,0 +1,32 @@
+{
+  "component_name": "customer_orders_pipeline",
+  "environments_tested": [
+    "dev",
+    "sit",
+    "prod"
+  ],
+  "bindings": {
+    "dev": {
+      "component_name": "customer_orders_pipeline",
+      "factory_name": "dev-adf-001",
+      "resource_group": "dev-data-rg",
+      "cloud": "azure",
+      "region": "westeurope"
+    },
+    "sit": {
+      "component_name": "customer_orders_pipeline",
+      "factory_name": "sit-adf-001",
+      "resource_group": "sit-data-rg",
+      "cloud": "azure",
+      "region": "westeurope"
+    },
+    "prod": {
+      "component_name": "customer_orders_pipeline",
+      "factory_name": "prod-adf-001",
+      "resource_group": "prod-data-rg",
+      "cloud": "azure",
+      "region": "westeurope"
+    }
+  },
+  "late_binding_validated": true
+}

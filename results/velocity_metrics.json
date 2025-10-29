@@ -1,0 +1,14 @@
+{
+  "metrics": {
+    "mean_time": 0.0035640716552734373,
+    "median_time": 0.0023272037506103516,
+    "min_time": 0.0019440650939941406,
+    "max_time": 0.011301040649414062,
+    "success_rate": 100.0
+  },
+  "baseline_time": 0.5,
+  "improvements": {
+    "duration_reduction_pct": 99.53455924987793,
+    "success_rate_improvement": 15.0
+  }
+}

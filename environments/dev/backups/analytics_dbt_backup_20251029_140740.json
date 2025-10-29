@@ -1,0 +1,16 @@
+{
+  "name": "analytics_dbt",
+  "properties": {
+    "activities": [
+      {
+        "name": "Extract",
+        "type": "Copy"
+      },
+      {
+        "name": "Transform",
+        "type": "DataFlow"
+      }
+    ],
+    "version": "1.0.0"
+  }
+}

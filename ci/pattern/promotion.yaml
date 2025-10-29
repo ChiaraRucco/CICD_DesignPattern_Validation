@@ -1,0 +1,87 @@
+# Promotion Policies - Gates for environment progression
+# Defines minimal requirements for advancing components
+
+promotion_rules:
+  dev_to_sit:
+    description: "Promotion from Development to System Integration Testing"
+    gates:
+      - name: smoke_tests_passed
+        type: automated
+        required: true
+        
+      - name: unit_tests_passed
+        type: automated
+        required: true
+        threshold: 100%
+        
+      - name: code_review_approved
+        type: manual
+        required: true
+        approvers: ["data-engineers"]
+        
+    quality_thresholds:
+      test_coverage: 80
+      lint_score: 90
+      
+  sit_to_uat:
+    description: "Promotion from SIT to User Acceptance Testing"
+    gates:
+      - name: integration_tests_passed
+        type: automated
+        required: true
+        
+      - name: data_quality_checks
+        type: automated
+        required: true
+        min_row_count: 1
+        max_staleness_hours: 24
+        
+      - name: tech_lead_approval
+        type: manual
+        required: true
+        approvers: ["tech-leads", "data-architects"]
+        
+    quality_thresholds:
+      test_coverage: 85
+      data_quality_score: 95
+      
+  uat_to_prod:
+    description: "Promotion from UAT to Production"
+    gates:
+      - name: uat_sign_off
+        type: manual
+        required: true
+        approvers: ["product-owners", "business-analysts"]
+        
+      - name: performance_tests_passed
+        type: automated
+        required: true
+        max_latency_ms: 5000
+        min_throughput_rps: 100
+        
+      - name: security_scan_passed
+        type: automated
+        required: true
+        
+      - name: change_approval_board
+        type: manual
+        required: true
+        approvers: ["change-board"]
+        notice_period_hours: 48
+        
+    quality_thresholds:
+      test_coverage: 90
+      data_quality_score: 98
+      security_score: 100
+      
+    additional_requirements:
+      - deployment_window: "saturday_2am_to_6am"
+      - rollback_plan_documented: true
+      - runbook_updated: true
+
+# Global promotion settings
+settings:
+  auto_promote_on_success: false  # Always require explicit promotion
+  rollback_on_smoke_test_failure: true
+  preserve_previous_version: true
+  max_concurrent_promotions: 3
