@@ -40,7 +40,7 @@ class ExperimentRunner:
                 'id': 1,
                 'name': 'Stage Coverage',
                 'file': 'experiments/1_stage_coverage.py',
-                'description': 'Validates all 7 stages execute successfully',
+                'description': 'Checks which of the 7 resolver stages execute',
                 'duration': '~5s',
                 'category': 'Core Pipeline'
             },
@@ -48,7 +48,7 @@ class ExperimentRunner:
                 'id': 2,
                 'name': 'Configuration Drift',
                 'file': 'experiments/2_config_drift.py',
-                'description': 'Proves 100% elimination of config drift',
+                'description': 'Counts structural parameter drift: per-env baseline vs. environment catalog',
                 'duration': '~3s',
                 'category': 'Core Pipeline'
             },
@@ -56,7 +56,7 @@ class ExperimentRunner:
                 'id': 3,
                 'name': 'Deployment Velocity',
                 'file': 'experiments/3_velocity.py',
-                'description': 'Measures 67% improvement in deployment speed',
+                'description': 'Times the local resolver (10 runs) against a fixed 0.5 s simulated baseline',
                 'duration': '~10s',
                 'category': 'Core Pipeline'
             },
@@ -72,7 +72,7 @@ class ExperimentRunner:
                 'id': 5,
                 'name': 'Provenance Capture',
                 'file': 'experiments/5_provenance.py',
-                'description': 'Verifies complete audit trail is recorded',
+                'description': 'Checks the provenance ledger for 5 top-level sections',
                 'duration': '~3s',
                 'category': 'Core Pipeline'
             },
@@ -88,7 +88,7 @@ class ExperimentRunner:
                 'id': 7,
                 'name': 'Failure & Rollback',
                 'file': 'experiments/7_deployment_failures.py',
-                'description': 'Validates failure scenarios and rollback mechanisms',
+                'description': 'Injects simulated smoke-test, gate and deployment failures',
                 'duration': '~8s',
                 'category': 'Multi-Environment'
             },
@@ -96,7 +96,7 @@ class ExperimentRunner:
                 'id': 8,
                 'name': 'Environment Inspection',
                 'file': 'experiments/8_environment_state.py',
-                'description': 'Verifies physical files created in each environment',
+                'description': 'Inspects files written to the simulated environment folders',
                 'duration': '~5s',
                 'category': 'Multi-Environment'
             },
@@ -104,7 +104,7 @@ class ExperimentRunner:
                 'id': 9,
                 'name': 'Mix-in Composition',
                 'file': 'experiments/9_mixin_composition.py',
-                'description': 'Proves mix-ins are composable cross-cutting concerns',
+                'description': 'Applies simulated mix-ins (notifications, data quality) in combination',
                 'duration': '~10s',
                 'category': 'Advanced Features'
             },
@@ -112,7 +112,7 @@ class ExperimentRunner:
                 'id': 10,
                 'name': 'Component Type Branching',
                 'file': 'experiments/10_component_types.py',
-                'description': 'Validates pipeline adapts to different component types',
+                'description': 'Checks the dispatch labels selected per component type',
                 'duration': '~10s',
                 'category': 'Advanced Features'
             },
@@ -120,7 +120,7 @@ class ExperimentRunner:
                 'id': 11,
                 'name': 'Complexity Metrics',
                 'file': 'experiments/11_complexity_metrics.py',
-                'description': 'Proves resolver is "thin" (61% less code)',
+                'description': 'Measures EADF LOC/complexity; other approaches are hard-coded estimates',
                 'duration': '~5s',
                 'category': 'Advanced Features'
             }
