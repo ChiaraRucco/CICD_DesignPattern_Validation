@@ -1,6 +1,6 @@
 # EADF Design Pattern – Validation Prototype
 
-Companion repository for the paper describing the **Environment-Agnostic Deployment Framework (EADF)** design pattern for CI/CD of data components. It contains a prototype resolver and the experiment scripts and stored results used in the paper's evaluation.
+Companion repository for the paper describing the **Environment-Aware Deployment Framework (EADF)** design pattern for CI/CD of data components. It contains a prototype resolver and the experiment scripts and stored results used in the paper's evaluation.
 
 ## Scope of the evidence
 
@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 All commands must be run from the repository root, because the scripts use relative paths.
 
-**Entry point:** [run_all_experiments.py](run_all_experiments.py). It is an interactive runner that runs experiments 1–11 in order, each as a subprocess. It then writes `results/execution_report.json`, regenerates `results/dashboard.html` and opens the dashboard in a browser.
+**Entry point:** [run_all_experiments.py](run_all_experiments.py). It is an interactive runner that runs experiments 1–11 in order, each as a subprocess. It then writes `results/execution_report.json`, regenerates `results/dashboard.html` and opens the dashboard in a browser. The dashboard's headline cards are fixed text in the generator (see below), so take numbers from the JSON files.
 
 ```bash
 python run_all_experiments.py          # menu: Enter/0 = all, then confirm with y
@@ -81,10 +81,12 @@ In the 2025-10-29 14:07 campaign, experiment 6 exited with a non-zero code and w
 
 ### Files not produced by the recorded campaign
 
+The two superseded files are kept in `results/archive/` for traceability only; they are not evidence for the paper.
+
 | File | Origin | Status |
 |---|---|---|
-| `results/VALIDATION_REPORT.txt` | Earlier run (2025-10-28 19:17), from a report script that is not in this repository | **Superseded.** Its summary lines, such as "drift eliminated (100%)" and "multi-environment deployment validated", contradict its own numbers and are not used in the paper |
-| `results/dashboard.html` | Generated at the end of the 14:07 campaign by `eadf_core/dashboard_generator.py` | Some headline cards and the checklist ("100% reduction", "67%", "… validated") are **fixed text in the generator**, not values read from results. Use the JSON files, not the dashboard, as the source of numbers |
+| `results/archive/VALIDATION_REPORT.txt` | Earlier run (2025-10-28 19:17), from a report script that is not in this repository | **Superseded.** Its summary lines, such as "drift eliminated (100%)" and "multi-environment deployment validated", contradict its own numbers and are not used in the paper |
+| `results/archive/dashboard.html` | Generated at the end of the 14:07 campaign by `eadf_core/dashboard_generator.py` | Some headline cards and the checklist ("100% reduction", "67%", "… validated") are **fixed text in the generator**, not values read from results. Use the JSON files, not the dashboard, as the source of numbers |
 | `results/deployment_success.json`, `results/deployment_log_success.json` | 2025-10-28 19:59 run | See the experiment 6 note above |
 
 ## Reproduction check
