@@ -480,62 +480,52 @@ class EADFResolver:
         logger.debug("  Deploying to AWS Step Functions")
     
     def _smoke_test_row_count(self, config: Dict) -> Dict:
-        """Execute row count smoke test"""
-        # Simulate checking row count
-        import random
-        random.seed(42)  # For reproducibility
-        row_count = random.randint(100, 10000)
+        """Row count smoke test against the row count recorded in the evidence file"""
         expected_min = config.get('expected_min', 1)
-        
+        row_count = self.env_evidence.get('row_count')
+        if not isinstance(row_count, int):
+            return {
+                'passed': False,
+                'status': 'not_run',
+                'message': f"Row count not recorded in evidence (expected min: {expected_min})"
+            }
         passed = row_count >= expected_min
         return {
             'passed': passed,
+            'status': 'passed' if passed else 'failed',
             'message': f"Row count: {row_count} (expected min: {expected_min})"
         }
     
     def _smoke_test_pipeline_status(self, config: Dict) -> Dict:
-        """Check pipeline execution status"""
-        # Simulate checking pipeline status
-        import random
-        random.seed(42)
-        passed = random.random() > 0.05  # 95% success rate
-        
+        """Pipeline status smoke test against the status recorded in the evidence file"""
+        status = self.env_evidence.get('pipeline_status')
+        passed = status == 'Succeeded'
         return {
             'passed': passed,
-            'message': "Pipeline status: Active" if passed else "Pipeline status: Failed"
+            'status': 'passed' if passed else 'not_run',
+            'message': f"Pipeline status: {status if status is not None else 'not recorded'}"
         }
 
     def _smoke_test_dbt(self, config: Dict) -> Dict:
-        """Run dbt smoke tests (simulate dbt test run)"""
-        import random
-        random.seed(42)
-        tests_run = config.get('run_tests', True)
-        passed = random.random() > 0.05  # 95% success rate
-        
+        """dbt test smoke test against the result recorded in the evidence file"""
+        result = self.env_evidence.get('dbt_tests')
+        passed = result == 'passed'
         return {
             'passed': passed,
-            'message': (
-                f"dbt tests {'executed' if tests_run else 'skipped'} - "
-                f"{'all passed' if passed else 'some failed'}"
-            )
+            'status': 'passed' if passed else 'not_run',
+            'message': f"dbt tests: {result if result is not None else 'not recorded'}"
         }
 
     def _smoke_test_notebook(self, config: Dict) -> Dict:
-        """Run Databricks notebook smoke test"""
-        import random
-        random.seed(42)
-        validate_output = config.get('validate_output', True)
-        passed = random.random() > 0.1  # 90% success rate
-        
+        """Notebook run smoke test against the result recorded in the evidence file"""
+        result = self.env_evidence.get('notebook_run')
+        passed = result == 'passed'
         return {
             'passed': passed,
-            'message': (
-                f"Notebook run {'validated' if validate_output else 'executed'} - "
-                f"{'success' if passed else 'error detected'}"
-            )
+            'status': 'passed' if passed else 'not_run',
+            'message': f"Notebook run: {result if result is not None else 'not recorded'}"
         }
 
-    
     def _get_promotion_key(self, current_env: str) -> Optional[str]:
         """Return the promotion rule that starts at current_env, read from promotion.yaml.
 

@@ -3,13 +3,13 @@ Mix-in Executor - Applies cross-cutting concerns to deployments
 Executes notifications, data quality checks, and other mix-ins
 """
 
-import random
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 class MixinExecutor:
     """Executes mix-in logic during deployment"""
     
-    def execute_data_quality_checks(self, mixin_config: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_data_quality_checks(self, mixin_config: Dict[str, Any],
+                                    evidence: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Execute data quality checks defined in mix-in
         
@@ -28,39 +28,41 @@ class MixinExecutor:
         # Row count check
         if checks_config.get('row_count', {}).get('enabled', True):
             min_rows = checks_config['row_count'].get('min_rows', 1)
-            # Simulate check
-            actual_rows = random.randint(100, 10000)
-            passed = actual_rows >= min_rows
-            
-            results['row_count'] = {
-                'status': 'passed' if passed else 'failed',
-                'actual_rows': actual_rows,
-                'min_required': min_rows
-            }
+            actual_rows = (evidence or {}).get('row_count')
+            if not isinstance(actual_rows, int):
+                results['row_count'] = {'status': 'not_evaluated', 'min_required': min_rows}
+            else:
+                passed = actual_rows >= min_rows
+                results['row_count'] = {
+                    'status': 'passed' if passed else 'failed',
+                    'actual_rows': actual_rows,
+                    'min_required': min_rows
+                }
         
         # Freshness check
         if checks_config.get('freshness', {}).get('enabled', True):
             max_staleness = checks_config['freshness'].get('max_staleness_hours', 24)
-            # Simulate check
-            actual_staleness = random.randint(1, 10)
-            passed = actual_staleness <= max_staleness
-            
-            results['freshness'] = {
-                'status': 'passed' if passed else 'failed',
-                'actual_staleness_hours': actual_staleness,
-                'max_allowed_hours': max_staleness
-            }
+            actual_staleness = (evidence or {}).get('staleness_hours')
+            if not isinstance(actual_staleness, (int, float)):
+                results['freshness'] = {'status': 'not_evaluated', 'max_allowed_hours': max_staleness}
+            else:
+                passed = actual_staleness <= max_staleness
+                results['freshness'] = {
+                    'status': 'passed' if passed else 'failed',
+                    'actual_staleness_hours': actual_staleness,
+                    'max_allowed_hours': max_staleness
+                }
         
         # Schema validation
         if checks_config.get('schema_validation', {}).get('enabled', True):
-            # Simulate check
-            passed = random.random() > 0.05  # 95% pass rate
-            
-            results['schema'] = {
-                'status': 'passed' if passed else 'failed',
-                'columns_validated': 15,
-                'schema_matches': passed
-            }
+            schema_result = (evidence or {}).get('schema_validation')
+            if schema_result not in ('passed', 'failed'):
+                results['schema'] = {'status': 'not_evaluated'}
+            else:
+                results['schema'] = {
+                    'status': schema_result,
+                    'schema_matches': schema_result == 'passed'
+                }
         
         return results
     
