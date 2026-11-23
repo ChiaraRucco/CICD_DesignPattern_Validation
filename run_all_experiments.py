@@ -369,8 +369,9 @@ class ExperimentRunner:
         
         # Final status
         if failed == 0:
-            print(f"{Colors.BOLD}{Colors.GREEN}{'✓'*3} ALL EXPERIMENTS PASSED {'✓'*3}{Colors.END}")
-            print(f"{Colors.GREEN}EADF validation framework is working perfectly!{Colors.END}")
+            print(f"{Colors.BOLD}{Colors.GREEN}{'✓'*3} ALL EXPERIMENT SCRIPTS COMPLETED {'✓'*3}{Colors.END}")
+            print(f"{Colors.YELLOW}This reports exit status only. Validation checks inside experiments can still FAIL;{Colors.END}")
+            print(f"{Colors.YELLOW}see the printed VALIDATION RESULTS and the results/*.json files (see README).{Colors.END}")
         else:
             print(f"{Colors.BOLD}{Colors.RED}⚠ {failed} EXPERIMENT(S) FAILED{Colors.END}")
             print(f"{Colors.YELLOW}Please review the errors above{Colors.END}")
