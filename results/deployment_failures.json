@@ -3,28 +3,47 @@
     "component": "customer_orders_pipeline",
     "from_environment": "dev",
     "to_environment": "sit",
-    "start_time": "2025-10-29T14:07:40.956043",
-    "status": "blocked",
-    "message": "Promotion blocked by gates"
+    "start_time": "2026-11-23T12:13:26.391401",
+    "status": "failed",
+    "deployment": {
+      "component_path": "components/customer_orders_pipeline/component.yaml",
+      "environment": "sit",
+      "start_time": "2026-11-23T12:13:26.400893",
+      "stages": {
+        "pre_deployment": "success",
+        "deployment": "success"
+      },
+      "artifact_location": "environments/sit/pipelines/customer_orders_pipeline_v1.0.0.json",
+      "status": "failed",
+      "error": "Smoke test failed: Row count check returned 0 rows",
+      "end_time": "2026-11-23T12:13:26.411286",
+      "rollback": {
+        "status": "rolled_back",
+        "environment": "sit",
+        "component": "customer_orders_pipeline",
+        "restored_from": "environments/sit/backups/customer_orders_pipeline_backup_20261123_121326.json"
+      }
+    },
+    "end_time": "2026-11-23T12:13:26.411686"
   },
   "gate_failure": {
     "component": "customer_orders_pipeline",
     "from_environment": "sit",
     "to_environment": "uat",
-    "start_time": "2025-10-29T14:07:41.081937",
+    "start_time": "2026-11-23T12:13:26.422732",
     "status": "blocked",
     "message": "Promotion blocked by gates"
   },
   "deployment_failure": {
     "component_path": "components/customer_orders_pipeline/component.yaml",
     "environment": "prod",
-    "start_time": "2025-10-29T14:07:41.094343",
+    "start_time": "2026-11-23T12:13:26.423110",
     "stages": {
       "pre_deployment": "success"
     },
     "status": "failed",
     "error": "Simulated deployment failure",
-    "end_time": "2025-10-29T14:07:41.227689"
+    "end_time": "2026-11-23T12:13:26.433126"
   },
   "pipeline_failure": {
     "component_path": "components/customer_orders_pipeline/component.yaml",
@@ -38,7 +57,7 @@
       "dev": {
         "component_path": "components/customer_orders_pipeline/component.yaml",
         "environment": "dev",
-        "start_time": "2025-10-29T14:07:41.228326",
+        "start_time": "2026-11-23T12:13:26.433287",
         "stages": {
           "pre_deployment": "success",
           "deployment": "success",
@@ -48,20 +67,63 @@
         },
         "artifact_location": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
         "status": "success",
-        "end_time": "2025-10-29T14:07:41.296593",
+        "end_time": "2026-11-23T12:13:26.443564",
         "eligible_for_promotion": true
       },
       "sit": {
         "component": "customer_orders_pipeline",
         "from_environment": "dev",
         "to_environment": "sit",
-        "start_time": "2025-10-29T14:07:41.305387",
-        "status": "blocked",
-        "message": "Promotion blocked by gates"
+        "start_time": "2026-11-23T12:13:26.444033",
+        "status": "success",
+        "deployment": {
+          "component_path": "components/customer_orders_pipeline/component.yaml",
+          "environment": "sit",
+          "start_time": "2026-11-23T12:13:26.453741",
+          "stages": {
+            "pre_deployment": "success",
+            "deployment": "success",
+            "smoke_test": "success",
+            "gate_evaluation": "passed",
+            "provenance": "recorded"
+          },
+          "artifact_location": "environments/sit/pipelines/customer_orders_pipeline_v1.0.0.json",
+          "status": "success",
+          "end_time": "2026-11-23T12:13:26.463968",
+          "eligible_for_promotion": true
+        },
+        "end_time": "2026-11-23T12:13:26.463979"
+      },
+      "uat": {
+        "component": "customer_orders_pipeline",
+        "from_environment": "sit",
+        "to_environment": "uat",
+        "start_time": "2026-11-23T12:13:26.464438",
+        "status": "failed",
+        "deployment": {
+          "component_path": "components/customer_orders_pipeline/component.yaml",
+          "environment": "uat",
+          "start_time": "2026-11-23T12:13:26.474190",
+          "stages": {
+            "pre_deployment": "success",
+            "deployment": "success"
+          },
+          "artifact_location": "environments/uat/pipelines/customer_orders_pipeline_v1.0.0.json",
+          "status": "failed",
+          "error": "Smoke test failed: Row count check returned 0 rows",
+          "end_time": "2026-11-23T12:13:26.484057",
+          "rollback": {
+            "status": "rolled_back",
+            "environment": "uat",
+            "component": "customer_orders_pipeline",
+            "restored_from": "environments/uat/backups/customer_orders_pipeline_backup_20261123_121326.json"
+          }
+        },
+        "end_time": "2026-11-23T12:13:26.484346"
       }
     },
-    "start_time": "2025-10-29T14:07:41.228233",
+    "start_time": "2026-11-23T12:13:26.433256",
     "status": "failed",
-    "stopped_at": "sit"
+    "stopped_at": "uat"
   }
 }

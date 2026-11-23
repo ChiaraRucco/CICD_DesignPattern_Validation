@@ -3,13 +3,13 @@
   "deployed_components": {
     "customer_orders_pipeline": {
       "version": "1.0.0",
-      "deployed_at": "2025-10-29T14:07:41.292251",
+      "deployed_at": "2026-11-23T12:13:26.443053",
       "artifact_path": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
       "status": "deployed"
     },
     "analytics_dbt": {
       "version": "1.0.0",
-      "deployed_at": "2025-10-29T14:07:40.029328",
+      "deployed_at": "2026-11-23T12:13:25.597885",
       "artifact_path": "environments/dev/pipelines/analytics_dbt_v1.0.0.json",
       "status": "deployed"
     },
@@ -21,11 +21,11 @@
     },
     "ml_training_notebook": {
       "version": "1.0.0",
-      "deployed_at": "2025-10-29T14:07:40.179038",
+      "deployed_at": "2026-11-23T12:13:25.744917",
       "artifact_path": "environments/dev/pipelines/ml_training_notebook_v1.0.0.json",
       "status": "deployed"
     }
   },
-  "deployment_count": 35,
-  "last_deployment": "2025-10-29T14:07:41.292273"
+  "deployment_count": 40,
+  "last_deployment": "2026-11-23T12:13:26.443057"
 }

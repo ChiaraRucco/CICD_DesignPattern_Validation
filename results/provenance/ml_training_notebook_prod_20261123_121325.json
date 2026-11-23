@@ -1,0 +1,127 @@
+{
+  "component": {
+    "name": "ml_training_notebook",
+    "type": "databricks_notebook",
+    "version": "1.0.0",
+    "commit_sha": "unknown"
+  },
+  "environment": {
+    "name": "prod",
+    "cloud": "azure",
+    "region": "westeurope",
+    "stage": "production"
+  },
+  "pipeline": {
+    "version": "1.0.0",
+    "pipeline_hash": "4abb66bba2c17df8e8966948e123180266e45e69934800f4dd41046236517c04",
+    "promotion_hash": "3c4b7c8357c0de48de45888d56a0ef92a7da5b56d0d95637008be0951f24c28e"
+  },
+  "stages": {
+    "binding": {
+      "status": "success",
+      "timestamp": "2026-11-23T12:13:25.813535",
+      "environment_snapshot": {
+        "stage": "production",
+        "cloud": "azure",
+        "region": "westeurope",
+        "orchestrator": {
+          "type": "azure_data_factory",
+          "factory_name": "prod-adf-001",
+          "resource_group": "prod-data-rg",
+          "subscription_id": "{{vault:azure_subscription_prod}}"
+        },
+        "storage": {
+          "type": "azure_blob",
+          "account": "proddatalake001",
+          "container": "raw",
+          "path_prefix": "/prod",
+          "connection_string": "{{vault:prod_storage_connection}}"
+        },
+        "compute": {
+          "type": "azure_synapse",
+          "workspace": "prod-synapse-ws",
+          "spark_pool": "prod-spark-xlarge",
+          "sql_pool": "prod-sql-pool"
+        },
+        "data_quality": {
+          "enabled": true,
+          "min_row_count": 10000,
+          "max_staleness_hours": 2
+        },
+        "secrets": {
+          "vault_provider": "azure_keyvault",
+          "vault_name": "prod-data-vault"
+        },
+        "medallion_layers": {
+          "bronze": "prod_bronze",
+          "silver": "prod_silver",
+          "gold": "prod_gold"
+        },
+        "tags": {
+          "environment": "production",
+          "cost_center": "operations",
+          "data_classification": "highly_confidential",
+          "compliance": "sox_compliant"
+        },
+        "high_availability": {
+          "enabled": true,
+          "disaster_recovery_region": "northeurope",
+          "rpo_minutes": 15,
+          "rto_minutes": 60
+        }
+      }
+    },
+    "build": {
+      "status": "success",
+      "timestamp": "2026-11-23T12:13:25.813582",
+      "component_type": "databricks_notebook",
+      "artifact_version": "1.0.0",
+      "artifact_hash": "c9a8efdd9e8a6a0516f28242e6b6241901f50338c06384bdd54dd8a6d23dc538"
+    },
+    "validation": {
+      "status": "success",
+      "timestamp": "2026-11-23T12:13:25.813606",
+      "checks": {
+        "schema": "passed",
+        "dependencies": "passed",
+        "compatibility": "passed"
+      },
+      "checks_passed": [
+        "schema",
+        "dependencies",
+        "compatibility"
+      ]
+    },
+    "deployment": {
+      "status": "success",
+      "execution_mode": "simulated",
+      "timestamp": "2026-11-23T12:13:25.814055",
+      "cloud": "azure",
+      "region": "westeurope"
+    },
+    "smoke_test": {
+      "status": "success",
+      "timestamp": "2026-11-23T12:13:25.814084",
+      "test_type": "notebook_run",
+      "component_type": "databricks_notebook",
+      "result": {
+        "passed": true,
+        "status": "passed",
+        "message": "Notebook run: passed"
+      }
+    },
+    "gate_evaluation": {
+      "status": "skipped",
+      "timestamp": "2026-11-23T12:13:25.814152",
+      "reason": "terminal_stage"
+    }
+  },
+  "outcomes": {
+    "overall_status": "success",
+    "deployment_timestamp": "2026-11-23T12:13:25.814211",
+    "total_stages": 7,
+    "successful_stages": 5,
+    "execution_mode": "simulated",
+    "secret_resolution": "mock"
+  }
+}
