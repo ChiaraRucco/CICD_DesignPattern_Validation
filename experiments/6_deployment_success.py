@@ -201,7 +201,7 @@ def main():
     
     for env_name in ['dev', 'sit', 'uat', 'prod']:
         env_state = env_summary.get(env_name, {})
-        actual_count = len(env_state.get('deployed_components', []))
+        actual_count = env_state.get('deployed_components', 0)
         if actual_count != expected_count:
             env_consistent = False
             break
