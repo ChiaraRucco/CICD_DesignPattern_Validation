@@ -5,13 +5,13 @@
       "deployed_components": {
         "customer_orders_pipeline": {
           "version": "1.0.0",
-          "deployed_at": "2025-10-29T14:07:41.292251",
+          "deployed_at": "2026-11-23T12:13:26.443053",
           "artifact_path": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
           "status": "deployed"
         },
         "analytics_dbt": {
           "version": "1.0.0",
-          "deployed_at": "2025-10-29T14:07:40.029328",
+          "deployed_at": "2026-11-23T12:13:25.597885",
           "artifact_path": "environments/dev/pipelines/analytics_dbt_v1.0.0.json",
           "status": "deployed"
         },
@@ -23,32 +23,40 @@
         },
         "ml_training_notebook": {
           "version": "1.0.0",
-          "deployed_at": "2025-10-29T14:07:40.179038",
+          "deployed_at": "2026-11-23T12:13:25.744917",
           "artifact_path": "environments/dev/pipelines/ml_training_notebook_v1.0.0.json",
           "status": "deployed"
         }
       },
-      "deployment_count": 35,
-      "last_deployment": "2025-10-29T14:07:41.292273"
+      "deployment_count": 40,
+      "last_deployment": "2026-11-23T12:13:26.443057"
     },
     "sit": {
       "environment": "sit",
       "deployed_components": {
         "customer_orders_pipeline": {
           "version": "1.0.0",
-          "deployed_at": "2025-10-29T14:07:41.064841",
+          "deployed_at": "2026-11-23T12:13:26.463451",
           "artifact_path": "environments/sit/pipelines/customer_orders_pipeline_v1.0.0.json",
           "status": "deployed"
         }
       },
-      "deployment_count": 1,
-      "last_deployment": "2025-10-29T14:07:41.064950"
+      "deployment_count": 5,
+      "last_deployment": "2026-11-23T12:13:26.463454"
     },
     "uat": {
       "environment": "uat",
-      "deployed_components": {},
-      "deployment_count": 0,
-      "last_deployment": null
+      "deployed_components": {
+        "customer_orders_pipeline": {
+          "version": "1.0.0",
+          "deployed_at": "2026-11-23T12:13:26.483911",
+          "artifact_path": "environments/uat/pipelines/customer_orders_pipeline_v1.0.0.json",
+          "status": "rolled_back",
+          "rolled_back_at": "2026-11-23T12:13:26.484239"
+        }
+      },
+      "deployment_count": 2,
+      "last_deployment": "2026-11-23T12:13:26.483914"
     },
     "prod": {
       "environment": "prod",
@@ -60,39 +68,39 @@
   "summary": {
     "dev": {
       "deployed_components": 4,
-      "total_deployments": 35,
-      "last_deployment": "2025-10-29T14:07:41.292273",
+      "total_deployments": 40,
+      "last_deployment": "2026-11-23T12:13:26.443057",
       "recent_history": [
         {
-          "timestamp": "2025-10-29T14:07:40.075985",
+          "timestamp": "2026-11-23T12:13:25.597953",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.665984",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "dev"
         },
         {
-          "timestamp": "2025-10-29T14:07:40.127661",
-          "component": "inventory_sync_pipeline",
-          "version": "1.0.0",
-          "action": "deployed",
-          "environment": "dev"
-        },
-        {
-          "timestamp": "2025-10-29T14:07:40.179381",
+          "timestamp": "2026-11-23T12:13:25.744987",
           "component": "ml_training_notebook",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "dev"
         },
         {
-          "timestamp": "2025-10-29T14:07:40.949655",
+          "timestamp": "2026-11-23T12:13:26.390479",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "dev"
         },
         {
-          "timestamp": "2025-10-29T14:07:41.292689",
+          "timestamp": "2026-11-23T12:13:26.443121",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
@@ -102,39 +110,39 @@
     },
     "sit": {
       "deployed_components": 1,
-      "total_deployments": 1,
-      "last_deployment": "2025-10-29T14:07:41.064950",
+      "total_deployments": 5,
+      "last_deployment": "2026-11-23T12:13:26.463454",
       "recent_history": [
         {
-          "timestamp": "2025-10-29T10:03:22.763594",
+          "timestamp": "2026-11-23T12:13:26.411195",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "sit"
         },
         {
-          "timestamp": "2025-10-29T12:18:06.084877",
+          "timestamp": "2026-11-23T12:13:26.411640",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "rolled_back",
+          "environment": "sit"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:26.421776",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "sit"
         },
         {
-          "timestamp": "2025-10-29T13:00:55.547152",
+          "timestamp": "2026-11-23T12:13:26.453654",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
           "environment": "sit"
         },
         {
-          "timestamp": "2025-10-29T13:14:20.411987",
-          "component": "customer_orders_pipeline",
-          "version": "1.0.0",
-          "action": "deployed",
-          "environment": "sit"
-        },
-        {
-          "timestamp": "2025-10-29T14:07:41.071572",
+          "timestamp": "2026-11-23T12:13:26.463511",
           "component": "customer_orders_pipeline",
           "version": "1.0.0",
           "action": "deployed",
@@ -143,19 +151,91 @@
       ]
     },
     "uat": {
-      "deployed_components": 0,
-      "total_deployments": 0,
-      "last_deployment": null,
-      "recent_history": []
+      "deployed_components": 1,
+      "total_deployments": 2,
+      "last_deployment": "2026-11-23T12:13:26.483914",
+      "recent_history": [
+        {
+          "timestamp": "2026-11-23T12:13:25.781659",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.793100",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:26.474109",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:26.483975",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:26.484301",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "rolled_back",
+          "environment": "uat"
+        }
+      ]
     },
     "prod": {
       "deployed_components": 0,
       "total_deployments": 0,
       "last_deployment": null,
-      "recent_history": []
+      "recent_history": [
+        {
+          "timestamp": "2026-11-23T12:13:25.656388",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.714894",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.724049",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.804721",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.813987",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        }
+      ]
     }
   },
-  "total_deployments": 36,
+  "total_deployments": 47,
   "promotion_chain": [
     {
       "environment": "dev",
@@ -166,6 +246,11 @@
       "environment": "sit",
       "version": "1.0.0",
       "status": "deployed"
+    },
+    {
+      "environment": "uat",
+      "version": "1.0.0",
+      "status": "rolled_back"
     }
   ]
 }

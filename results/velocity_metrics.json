@@ -1,14 +1,11 @@
 {
   "metrics": {
-    "mean_time": 0.0035640716552734373,
-    "median_time": 0.0023272037506103516,
-    "min_time": 0.0019440650939941406,
-    "max_time": 0.011301040649414062,
+    "mean_time": 0.0005644321441650391,
+    "median_time": 0.0005534887313842773,
+    "min_time": 0.0005042552947998047,
+    "max_time": 0.0007259845733642578,
     "success_rate": 100.0
   },
-  "baseline_time": 0.5,
-  "improvements": {
-    "duration_reduction_pct": 99.53455924987793,
-    "success_rate_improvement": 15.0
-  }
+  "constant_baseline_time_not_measured": 0.5,
+  "note": "Timings of the local resolver only. No improvement is reported against a constant."
 }

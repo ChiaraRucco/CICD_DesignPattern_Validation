@@ -361,7 +361,10 @@ class DashboardGenerator:
             'deployment_success.json',
             'environment_inspection.json',
             'mixin_composition.json',
-            'component_type_branching.json'
+            'component_type_branching.json',
+            'deployment_failures.json',
+            'provenance_audit.json',
+            'complexity_metrics.json'
         ]
         
         for filename in result_files:
@@ -451,130 +454,118 @@ class DashboardGenerator:
         
         return html
     
+    @staticmethod
+    def _chain_status(results: Dict) -> Dict[str, Dict[str, str]]:
+        """Per component, the status recorded for each environment in deployment_success.json"""
+        chain = {}
+        for record in results.get('deployment_success', {}).get('deployment_results', []):
+            deployments = record.get('deployments', {})
+            chain[record.get('component', 'unknown')] = {
+                env: deployments.get(env, {}).get('status', 'not reached')
+                for env in ['dev', 'sit', 'uat', 'prod']
+            }
+        return chain
+    
     def _generate_metrics_section(self, results: Dict) -> str:
-        """Generate key metrics cards"""
-        
-        drift_data = results.get('config_drift_results', {})
-        velocity_data = results.get('velocity_metrics', {})
-        
-        drift_reduction = drift_data.get('drift_reduction_percent', 100)
-        duration_reduction = velocity_data.get('improvements', {}).get('duration_reduction_pct', 67)
+        """Generate key metrics cards from the result files (no fixed claims)"""
+        chain = self._chain_status(results)
+        complete = sum(1 for envs in chain.values() if all(v == 'success' for v in envs.values()))
+        stages = results.get('stage_coverage', {})
+        drift = results.get('config_drift_results', {})
+        velocity = results.get('velocity_metrics', {}).get('metrics', {})
         
         metrics = [
-            ('0', 'Config Drift Incidents', '100% reduction', 'incidents'),
-            ('67%', 'Faster Deployments', f'{duration_reduction:.0f}% improvement', 'faster'),
-            ('98%', 'Success Rate', '+13 pts vs baseline', 'success'),
-            ('12', 'Total Deployments', 'across all environments', 'deployments')
+            (f"{complete}/{len(chain)}", 'Components through all environments',
+             'deployment_success.json'),
+            (f"{stages.get('executed_stages', 'n/a')}/{stages.get('total_stages', 'n/a')}",
+             'Resolver stages executed', 'stage_coverage.json'),
+            (f"{drift.get('baseline_drift', 'n/a')} vs {drift.get('eadf_issues', 'n/a')}",
+             'Missing keys: baseline vs EADF catalog', 'counts only; not a reduction'),
+            (f"{velocity.get('median_time', 0) * 1000:.1f} ms", 'Median local resolver time',
+             'baseline is a constant, not measured'),
         ]
         
         html = '<div class="section">'
-        html += '<h2 class="section-title">📈 Key Performance Metrics</h2>'
+        html += '<h2 class="section-title">📈 Key Measures</h2>'
         html += '<div class="metrics-grid">'
-        
-        for value, label, change, _ in metrics:
+        for value, label, note in metrics:
             html += f'''
             <div class="metric-card">
                 <div class="metric-label">{label}</div>
                 <div class="metric-value">{value}</div>
-                <div class="metric-change">{change}</div>
+                <div class="metric-change">{note}</div>
             </div>
             '''
-        
         html += '</div>'
         html += '</div>'
-        
         return html
     
     def _generate_promotion_section(self, results: Dict) -> str:
-        """Generate promotion chain visualization"""
-        
+        """Generate the promotion chain from deployment_success.json"""
+        icons = {'success': ('✓', 'success'), 'blocked': ('⚠', 'pending'),
+                 'failed': ('✗', 'failed'), 'not reached': ('○', 'not-deployed')}
         html = '<div class="section">'
         html += '<h2 class="section-title">🔄 Promotion Chain</h2>'
-        
-        html += '''
-        <div class="promotion-chain">
-        <div class="promotion-item success">
-            ✓ DEV    customer_orders_pipeline v2.1.3    (deployed 2 min ago)
-        </div>
-        <div class="promotion-item success">
-            ✓ SIT    customer_orders_pipeline v2.1.3    (deployed 15 min ago)
-        </div>
-        <div class="promotion-item pending">
-            ⚠ UAT    customer_orders_pipeline v2.1.3    (pending approval)
-        </div>
-        <div class="promotion-item not-deployed">
-            ○ PROD   customer_orders_pipeline           (not deployed)
-        </div>
-        </div>
-        '''
-        
+        html += '<div class="promotion-chain">'
+        for component, envs in self._chain_status(results).items():
+            for env, status in envs.items():
+                icon, css = icons.get(status, ('?', 'pending'))
+                html += f'<div class="promotion-item {css}">{icon} {env.upper():5s} {component} ({status})</div>'
+        html += '</div>'
         html += '<p style="margin-top: 15px; color: #666;">'
-        html += 'Component progresses through environments with gate evaluation at each promotion'
+        html += 'Gates use the evidence files supplied with each component (synthetic demo inputs).'
         html += '</p>'
         html += '</div>'
-        
         return html
     
     def _generate_validation_section(self, results: Dict) -> str:
-        """Generate validation results"""
+        """Generate the checklist from the result files"""
+        chain = self._chain_status(results)
+        complete = sum(1 for envs in chain.values() if all(v == 'success' for v in envs.values()))
+        stages = results.get('stage_coverage', {})
+        provenance = results.get('provenance_audit', {})
+        failures = results.get('deployment_failures', {})
         
         validations = [
-            ('✓', 'All 7 stages implemented', True),
-            ('✓', 'Configuration drift eliminated (100%)', True),
-            ('✓', 'Multi-environment deployment validated', True),
-            ('✓', 'Rollback mechanisms tested', True),
-            ('✓', 'Mix-in composition validated', True),
-            ('✓', 'Component type branching validated', True),
-            ('✓', 'Provenance capture complete', True),
+            (f"{stages.get('executed_stages', 0)} of {stages.get('total_stages', 7)} stages executed",
+             stages.get('executed_stages') == stages.get('total_stages')),
+            (f"{complete} of {len(chain)} components deployed through all environments",
+             bool(chain) and complete == len(chain)),
+            ('Environment consistency check',
+             results.get('deployment_success', {}).get('validations', {}).get('environment_consistency', False)),
+            (f"Provenance sections present: {provenance.get('sections_present', 0)}/{provenance.get('total_sections', 5)}",
+             provenance.get('sections_present') == provenance.get('total_sections')),
+            ('Failure injection recorded (smoke test, gate, deployment)',
+             all(k in failures for k in ['smoke_test_failure', 'gate_failure', 'deployment_failure'])),
+            ('Rollback recorded for an injected failure', '"rollback"' in json.dumps(failures)),
+            ('Mix-in composition checks', results.get('mixin_composition', {}).get('all_passed', False)),
+            ('Component type branching checks', results.get('component_type_branching', {}).get('all_passed', False)),
         ]
         
         html = '<div class="section">'
         html += '<h2 class="section-title">✅ Validation Results</h2>'
         html += '<div class="validation-grid">'
-        
-        for icon, text, passed in validations:
+        for text, passed in validations:
             status = 'pass' if passed else 'fail'
+            icon = '✓' if passed else '✗'
             html += f'''
             <div class="validation-item {status}">
                 <div class="validation-icon">{icon}</div>
                 <div class="validation-text">{text}</div>
             </div>
             '''
-        
         html += '</div>'
         html += '</div>'
-        
         return html
     
     def _generate_files_section(self, results: Dict) -> str:
-        """Generate files structure visualization"""
-        
+        """List the result files that were loaded"""
         html = '<div class="section">'
-        html += '<h2 class="section-title">📁 Deployed Artifacts</h2>'
-        
-        html += '''
-        <div class="files-tree">
-<span class="tree-folder">📂 environments/</span>
-<span class="tree-folder">  📂 dev/</span>
-<span class="tree-folder">    📂 pipelines/</span>
-<span class="tree-file">      <span class="tree-icon">📄</span> customer_orders_pipeline_v2.1.3.json</span>
-<span class="tree-folder">    📂 backups/</span>
-<span class="tree-file">      <span class="tree-icon">💾</span> customer_orders_pipeline_backup_20250128.json</span>
-<span class="tree-folder">    📂 logs/</span>
-<span class="tree-file">      <span class="tree-icon">📋</span> deployments.log</span>
-<span class="tree-file">    <span class="tree-icon">⚙️</span> state.json</span>
-
-<span class="tree-folder">  📂 sit/ (same structure)</span>
-<span class="tree-folder">  📂 uat/ (same structure)</span>
-<span class="tree-folder">  📂 prod/ (same structure)</span>
-        </div>
-        '''
-        
-        html += '<p style="margin-top: 15px; color: #666;">'
-        html += 'Physical artifacts deployed across all environments with complete backup and audit logs'
-        html += '</p>'
-        html += '</div>'
-        
+        html += '<h2 class="section-title">📁 Stored Results Used</h2>'
+        html += '<ul>'
+        for name in sorted(results):
+            html += f'<li>results/{name}.json</li>'
+        html += '</ul></div>'
         return html
     
     def save_dashboard(self, output_path: str = "results/dashboard.html"):

@@ -179,19 +179,12 @@ def main():
     
     for env_name in ['dev', 'sit', 'uat', 'prod']:
         env_state = env_summary.get(env_name, {})
-        components = env_state.get('deployed_components', [])
+        deployed_count = env_state.get('deployed_components', 0)
         
         print(f"\n  {env_name.upper()}")
-        print(f"    Total components: {len(components)}")
+        print(f"    Total components: {deployed_count}")
         
-        if components:
-            print(f"    Components:")
-            for comp_name in components:
-                comp_info = env_state.get('component_details', {}).get(comp_name, {})
-                version = comp_info.get('version', 'unknown')
-                comp_type = comp_info.get('type', 'unknown')
-                print(f"      • {comp_name} (v{version}) [{comp_type}]")
-        else:
+        if not deployed_count:
             print(f"    No components deployed")
     
     # Validation results
@@ -208,7 +201,7 @@ def main():
     
     for env_name in ['dev', 'sit', 'uat', 'prod']:
         env_state = env_summary.get(env_name, {})
-        actual_count = len(env_state.get('deployed_components', []))
+        actual_count = env_state.get('deployed_components', 0)
         if actual_count != expected_count:
             env_consistent = False
             break

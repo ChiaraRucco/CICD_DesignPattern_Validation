@@ -1,38 +1,518 @@
 {
-  "component_path": "components/customer_orders_pipeline/component.yaml",
-  "environments": [
-    "dev",
-    "sit",
-    "uat",
-    "prod"
+  "components_deployed": 4,
+  "components_metadata": [
+    {
+      "path": "components/analytics_dbt/component.yaml",
+      "name": "analytics_dbt",
+      "version": "1.0.0",
+      "type": "dbt_project"
+    },
+    {
+      "path": "components/customer_orders_pipeline/component.yaml",
+      "name": "customer_orders_pipeline",
+      "version": "1.0.0",
+      "type": "adf_pipeline"
+    },
+    {
+      "path": "components/inventory_sync_pipeline/component.yaml",
+      "name": "inventory_sync_pipeline",
+      "version": "1.0.0",
+      "type": "adf_pipeline"
+    },
+    {
+      "path": "components/ml_training_notebook/component.yaml",
+      "name": "ml_training_notebook",
+      "version": "1.0.0",
+      "type": "databricks_notebook"
+    }
   ],
-  "deployments": {
-    "dev": {
-      "component_path": "components/customer_orders_pipeline/component.yaml",
-      "environment": "dev",
-      "start_time": "2025-10-28T19:59:26.248752",
-      "stages": {
-        "pre_deployment": "success",
-        "deployment": "success",
-        "smoke_test": "success",
-        "gate_evaluation": "passed",
-        "provenance": "recorded"
-      },
-      "artifact_location": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
+  "deployment_results": [
+    {
+      "component": "analytics_dbt",
+      "version": "1.0.0",
+      "type": "dbt_project",
       "status": "success",
-      "end_time": "2025-10-28T19:59:26.286060",
-      "eligible_for_promotion": true
+      "deployments": {
+        "dev": {
+          "component_path": "components/analytics_dbt/component.yaml",
+          "environment": "dev",
+          "start_time": "2026-11-23T12:13:25.588626",
+          "stages": {
+            "pre_deployment": "success",
+            "deployment": "success",
+            "smoke_test": "success",
+            "gate_evaluation": "passed",
+            "provenance": "recorded"
+          },
+          "artifact_location": "environments/dev/pipelines/analytics_dbt_v1.0.0.json",
+          "status": "success",
+          "end_time": "2026-11-23T12:13:25.598380",
+          "eligible_for_promotion": true
+        },
+        "sit": {
+          "component": "analytics_dbt",
+          "from_environment": "dev",
+          "to_environment": "sit",
+          "start_time": "2026-11-23T12:13:25.598809",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/analytics_dbt/component.yaml",
+            "environment": "sit",
+            "start_time": "2026-11-23T12:13:25.607955",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/sit/pipelines/analytics_dbt_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.617466",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.617477"
+        },
+        "uat": {
+          "component": "analytics_dbt",
+          "from_environment": "sit",
+          "to_environment": "uat",
+          "start_time": "2026-11-23T12:13:25.617908",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/analytics_dbt/component.yaml",
+            "environment": "uat",
+            "start_time": "2026-11-23T12:13:25.626996",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/uat/pipelines/analytics_dbt_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.636752",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.636764"
+        },
+        "prod": {
+          "component": "analytics_dbt",
+          "from_environment": "uat",
+          "to_environment": "prod",
+          "start_time": "2026-11-23T12:13:25.637194",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/analytics_dbt/component.yaml",
+            "environment": "prod",
+            "start_time": "2026-11-23T12:13:25.647015",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/prod/pipelines/analytics_dbt_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.656773",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.656784"
+        }
+      },
+      "promotions": []
+    },
+    {
+      "component": "customer_orders_pipeline",
+      "version": "1.0.0",
+      "type": "adf_pipeline",
+      "status": "success",
+      "deployments": {
+        "dev": {
+          "component_path": "components/customer_orders_pipeline/component.yaml",
+          "environment": "dev",
+          "start_time": "2026-11-23T12:13:25.656875",
+          "stages": {
+            "pre_deployment": "success",
+            "deployment": "success",
+            "smoke_test": "success",
+            "gate_evaluation": "passed",
+            "provenance": "recorded"
+          },
+          "artifact_location": "environments/dev/pipelines/customer_orders_pipeline_v1.0.0.json",
+          "status": "success",
+          "end_time": "2026-11-23T12:13:25.666413",
+          "eligible_for_promotion": true
+        },
+        "sit": {
+          "component": "customer_orders_pipeline",
+          "from_environment": "dev",
+          "to_environment": "sit",
+          "start_time": "2026-11-23T12:13:25.666844",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/customer_orders_pipeline/component.yaml",
+            "environment": "sit",
+            "start_time": "2026-11-23T12:13:25.676637",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/sit/pipelines/customer_orders_pipeline_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.686249",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.686259"
+        },
+        "uat": {
+          "component": "customer_orders_pipeline",
+          "from_environment": "sit",
+          "to_environment": "uat",
+          "start_time": "2026-11-23T12:13:25.686678",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/customer_orders_pipeline/component.yaml",
+            "environment": "uat",
+            "start_time": "2026-11-23T12:13:25.695794",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/uat/pipelines/customer_orders_pipeline_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.705380",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.705390"
+        },
+        "prod": {
+          "component": "customer_orders_pipeline",
+          "from_environment": "uat",
+          "to_environment": "prod",
+          "start_time": "2026-11-23T12:13:25.705838",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/customer_orders_pipeline/component.yaml",
+            "environment": "prod",
+            "start_time": "2026-11-23T12:13:25.714974",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/prod/pipelines/customer_orders_pipeline_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.724430",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.724442"
+        }
+      },
+      "promotions": []
+    },
+    {
+      "component": "inventory_sync_pipeline",
+      "version": "1.0.0",
+      "type": "adf_pipeline",
+      "status": "failed",
+      "deployments": {
+        "dev": {
+          "component_path": "components/inventory_sync_pipeline/component.yaml",
+          "environment": "dev",
+          "start_time": "2026-11-23T12:13:25.724533",
+          "stages": {},
+          "status": "failed",
+          "error": "Dependency not verifiable in repository: master_data_pipeline",
+          "end_time": "2026-11-23T12:13:25.735662"
+        }
+      },
+      "promotions": []
+    },
+    {
+      "component": "ml_training_notebook",
+      "version": "1.0.0",
+      "type": "databricks_notebook",
+      "status": "success",
+      "deployments": {
+        "dev": {
+          "component_path": "components/ml_training_notebook/component.yaml",
+          "environment": "dev",
+          "start_time": "2026-11-23T12:13:25.735738",
+          "stages": {
+            "pre_deployment": "success",
+            "deployment": "success",
+            "smoke_test": "success",
+            "gate_evaluation": "passed",
+            "provenance": "recorded"
+          },
+          "artifact_location": "environments/dev/pipelines/ml_training_notebook_v1.0.0.json",
+          "status": "success",
+          "end_time": "2026-11-23T12:13:25.745423",
+          "eligible_for_promotion": true
+        },
+        "sit": {
+          "component": "ml_training_notebook",
+          "from_environment": "dev",
+          "to_environment": "sit",
+          "start_time": "2026-11-23T12:13:25.745844",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/ml_training_notebook/component.yaml",
+            "environment": "sit",
+            "start_time": "2026-11-23T12:13:25.755546",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/sit/pipelines/ml_training_notebook_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.769382",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.769393"
+        },
+        "uat": {
+          "component": "ml_training_notebook",
+          "from_environment": "sit",
+          "to_environment": "uat",
+          "start_time": "2026-11-23T12:13:25.769936",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/ml_training_notebook/component.yaml",
+            "environment": "uat",
+            "start_time": "2026-11-23T12:13:25.781775",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/uat/pipelines/ml_training_notebook_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.793805",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.793825"
+        },
+        "prod": {
+          "component": "ml_training_notebook",
+          "from_environment": "uat",
+          "to_environment": "prod",
+          "start_time": "2026-11-23T12:13:25.794463",
+          "status": "success",
+          "deployment": {
+            "component_path": "components/ml_training_notebook/component.yaml",
+            "environment": "prod",
+            "start_time": "2026-11-23T12:13:25.804808",
+            "stages": {
+              "pre_deployment": "success",
+              "deployment": "success",
+              "smoke_test": "success",
+              "gate_evaluation": "passed",
+              "provenance": "recorded"
+            },
+            "artifact_location": "environments/prod/pipelines/ml_training_notebook_v1.0.0.json",
+            "status": "success",
+            "end_time": "2026-11-23T12:13:25.814371",
+            "eligible_for_promotion": true
+          },
+          "end_time": "2026-11-23T12:13:25.814381"
+        }
+      },
+      "promotions": []
+    }
+  ],
+  "environment_summary": {
+    "dev": {
+      "deployed_components": 4,
+      "total_deployments": 38,
+      "last_deployment": "2026-11-23T12:13:25.744920",
+      "recent_history": [
+        {
+          "timestamp": "2025-10-29T14:07:40.949655",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        },
+        {
+          "timestamp": "2025-10-29T14:07:41.292689",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.597953",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.665984",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.744987",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "dev"
+        }
+      ]
     },
     "sit": {
-      "component": "customer_orders_pipeline",
-      "from_environment": "dev",
-      "to_environment": "sit",
-      "start_time": "2025-10-28T19:59:26.287735",
-      "status": "blocked",
-      "message": "Promotion blocked by gates"
+      "deployed_components": 3,
+      "total_deployments": 7,
+      "last_deployment": "2026-11-23T12:13:25.768819",
+      "recent_history": [
+        {
+          "timestamp": "2026-11-23T12:13:25.617041",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "sit"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.676553",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "sit"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.685839",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "sit"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.755252",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "sit"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.768898",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "sit"
+        }
+      ]
+    },
+    "uat": {
+      "deployed_components": 3,
+      "total_deployments": 6,
+      "last_deployment": "2026-11-23T12:13:25.792997",
+      "recent_history": [
+        {
+          "timestamp": "2026-11-23T12:13:25.636311",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.695708",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.704955",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.781659",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.793100",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "uat"
+        }
+      ]
+    },
+    "prod": {
+      "deployed_components": 3,
+      "total_deployments": 6,
+      "last_deployment": "2026-11-23T12:13:25.813926",
+      "recent_history": [
+        {
+          "timestamp": "2026-11-23T12:13:25.656388",
+          "component": "analytics_dbt",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.714894",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.724049",
+          "component": "customer_orders_pipeline",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.804721",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        },
+        {
+          "timestamp": "2026-11-23T12:13:25.813987",
+          "component": "ml_training_notebook",
+          "version": "1.0.0",
+          "action": "deployed",
+          "environment": "prod"
+        }
+      ]
     }
   },
-  "start_time": "2025-10-28T19:59:26.248615",
-  "status": "failed",
-  "stopped_at": "sit"
+  "validations": {
+    "components_discovered": true,
+    "all_components_deployed": false,
+    "all_environments_reached": true,
+    "environment_consistency": false,
+    "multi_component_support": true
+  },
+  "all_passed": false
 }

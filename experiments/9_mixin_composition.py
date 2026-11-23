@@ -242,7 +242,13 @@ def main():
             for r in validator.execution_log
         ),
         'notifications_work_when_enabled': 'notifications' in notifications_only['mixin_results'],
-        'data_quality_works_when_enabled': 'data_quality' in data_quality_only['mixin_results'],
+        # A data-quality check counts only when it produced a status from evidence.
+        # Without evidence the mix-in reports not_evaluated, and this check fails.
+        'data_quality_works_when_enabled': any(
+            check.get('status') in ('passed', 'failed')
+            for check in data_quality_only['mixin_results'].get('data_quality', {}).values()
+            if isinstance(check, dict)
+        ),
         'mix_ins_compose_without_conflict': (
             len(both_mixins['mixins_applied']) == 2 and
             both_mixins['deployment_status'] == 'success'

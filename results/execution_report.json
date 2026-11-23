@@ -1,85 +1,85 @@
 {
-  "timestamp": "2025-10-29T14:07:44.580217",
-  "total_duration": 9.022724866867065,
+  "timestamp": "2026-11-23T12:13:28.808094",
+  "total_duration": 6.151160478591919,
   "experiments_run": 11,
-  "successful": 10,
-  "failed": 1,
+  "successful": 11,
+  "failed": 0,
   "results": [
     {
       "id": 1,
       "name": "Stage Coverage",
       "success": true,
-      "duration": 0.43598008155822754,
+      "duration": 0.07174038887023926,
       "category": "Core Pipeline"
     },
     {
       "id": 2,
       "name": "Configuration Drift",
       "success": true,
-      "duration": 0.14095020294189453,
+      "duration": 0.033850669860839844,
       "category": "Core Pipeline"
     },
     {
       "id": 3,
       "name": "Deployment Velocity",
       "success": true,
-      "duration": 0.6805770397186279,
+      "duration": 0.1680748462677002,
       "category": "Core Pipeline"
     },
     {
       "id": 4,
       "name": "Late Binding",
       "success": true,
-      "duration": 0.14565706253051758,
+      "duration": 0.029326677322387695,
       "category": "Core Pipeline"
     },
     {
       "id": 5,
       "name": "Provenance Capture",
       "success": true,
-      "duration": 0.2954890727996826,
+      "duration": 0.06922316551208496,
       "category": "Core Pipeline"
     },
     {
       "id": 6,
       "name": "Multi-Environment Deployment",
-      "success": false,
-      "duration": 0.4343259334564209,
+      "success": true,
+      "duration": 0.29492831230163574,
       "category": "Multi-Environment"
     },
     {
       "id": 7,
       "name": "Failure & Rollback",
       "success": true,
-      "duration": 0.64599609375,
+      "duration": 0.1709280014038086,
       "category": "Multi-Environment"
     },
     {
       "id": 8,
       "name": "Environment Inspection",
       "success": true,
-      "duration": 0.19683194160461426,
+      "duration": 0.03499555587768555,
       "category": "Multi-Environment"
     },
     {
       "id": 9,
       "name": "Mix-in Composition",
       "success": true,
-      "duration": 0.478834867477417,
+      "duration": 0.12724804878234863,
       "category": "Advanced Features"
     },
     {
       "id": 10,
       "name": "Component Type Branching",
       "success": true,
-      "duration": 0.4098470211029053,
+      "duration": 0.10938143730163574,
       "category": "Advanced Features"
     },
     {
       "id": 11,
       "name": "Complexity Metrics",
       "success": true,
-      "duration": 0.11540675163269043,
+      "duration": 0.03348851203918457,
       "category": "Advanced Features"
     }
   ]

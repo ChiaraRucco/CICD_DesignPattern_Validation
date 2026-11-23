@@ -1,13 +1,13 @@
 {
   "eadf_resolver": {
-    "total_lines": 579,
-    "code_lines": 431,
-    "comment_lines": 42,
-    "blank_lines": 106,
+    "total_lines": 624,
+    "code_lines": 477,
+    "comment_lines": 38,
+    "blank_lines": 109,
     "classes": 1,
-    "functions": 31,
-    "complexity": 65,
-    "logic_density": 0.15081206496519722,
+    "functions": 35,
+    "complexity": 85,
+    "logic_density": 0.17819706498951782,
     "file_type": "python",
     "approach": "EADF Resolver"
   },
@@ -58,7 +58,7 @@
     "resolver_is_less_complex_than_baseline": false,
     "total_loc_reduced_vs_baseline": true,
     "zero_duplication": true,
-    "simpler_than_jenkins": true,
+    "simpler_than_jenkins": false,
     "simpler_than_github_actions": false
   },
   "all_passed": false

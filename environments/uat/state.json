@@ -1,6 +1,14 @@
 {
   "environment": "uat",
-  "deployed_components": {},
-  "deployment_count": 0,
-  "last_deployment": null
+  "deployed_components": {
+    "customer_orders_pipeline": {
+      "version": "1.0.0",
+      "deployed_at": "2026-11-23T12:13:26.483911",
+      "artifact_path": "environments/uat/pipelines/customer_orders_pipeline_v1.0.0.json",
+      "status": "rolled_back",
+      "rolled_back_at": "2026-11-23T12:13:26.484239"
+    }
+  },
+  "deployment_count": 2,
+  "last_deployment": "2026-11-23T12:13:26.483914"
 }

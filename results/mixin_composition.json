@@ -55,19 +55,15 @@
       "mixin_results": {
         "data_quality": {
           "row_count": {
-            "status": "passed",
-            "actual_rows": 509,
+            "status": "not_evaluated",
             "min_required": 1
           },
           "freshness": {
-            "status": "passed",
-            "actual_staleness_hours": 5,
+            "status": "not_evaluated",
             "max_allowed_hours": 24
           },
           "schema": {
-            "status": "passed",
-            "columns_validated": 15,
-            "schema_matches": true
+            "status": "not_evaluated"
           }
         }
       }
@@ -108,19 +104,15 @@
         },
         "data_quality": {
           "row_count": {
-            "status": "passed",
-            "actual_rows": 509,
+            "status": "not_evaluated",
             "min_required": 1
           },
           "freshness": {
-            "status": "passed",
-            "actual_staleness_hours": 5,
+            "status": "not_evaluated",
             "max_allowed_hours": 24
           },
           "schema": {
-            "status": "passed",
-            "columns_validated": 15,
-            "schema_matches": true
+            "status": "not_evaluated"
           }
         }
       }
@@ -129,9 +121,9 @@
   "validations": {
     "mix_ins_load_successfully": true,
     "notifications_work_when_enabled": true,
-    "data_quality_works_when_enabled": true,
+    "data_quality_works_when_enabled": false,
     "mix_ins_compose_without_conflict": true,
     "mix_ins_are_optional": true
   },
-  "all_passed": true
+  "all_passed": false
 }

@@ -32,6 +32,13 @@ class EADFResolver:
         self.pipeline = self._load_yaml("ci/pattern/pipeline.yaml")
         self.promotion = self._load_yaml("ci/pattern/promotion.yaml")
         
+        # Evidence supplied with the component (gate and smoke-test inputs).
+        # Missing evidence is treated as "not evaluated", never as a pass.
+        evidence_path = self.component_path.parent / 'evidence.yaml'
+        self.evidence = self._load_yaml(str(evidence_path)) if evidence_path.exists() else {}
+        environments_evidence = (self.evidence or {}).get('environments') or {}
+        self.env_evidence = environments_evidence.get(environment_name) or {}
+        
         # Execution state
         self.bindings = {}
         self.execution_log = []
@@ -179,27 +186,25 @@ class EADFResolver:
     def stage_validation(self):
         """
         Stage 3: Validation
-        Check artifact against schema rules and compatibility constraints
+        Check artifact against schema rules, dependencies, and target compatibility.
+        Each check either passes or raises; the record lists the checks that passed.
         """
-        logger.info(f"\n[3/7] VALIDATION - Schema and compatibility checks")
+        logger.info(f"\n[3/7] VALIDATION - Schema, dependency, and compatibility checks")
         
-        # Schema validation
         self._validate_schema()
-        
-        # Dependency validation
         self._check_dependencies()
-        
-        # Compatibility validation
         self._verify_compatibility()
         
+        checks = {'schema': 'passed', 'dependencies': 'passed', 'compatibility': 'passed'}
         logger.info(f"  ✓ Schema validation passed")
-        logger.info(f"  ✓ Dependencies satisfied")
+        logger.info(f"  ✓ Dependencies verified")
         logger.info(f"  ✓ Compatibility verified")
         
         self.provenance['stages']['validation'] = {
             'status': 'success',
             'timestamp': datetime.now().isoformat(),
-            'checks_passed': ['schema', 'dependencies', 'compatibility']
+            'checks': checks,
+            'checks_passed': [name for name, status in checks.items() if status == 'passed']
         }
     
     def stage_deployment(self):
@@ -227,6 +232,7 @@ class EADFResolver:
         
         self.provenance['stages']['deployment'] = {
             'status': 'success',
+            'execution_mode': 'simulated',
             'timestamp': datetime.now().isoformat(),
             'cloud': cloud,
             'region': self.bindings['environment']['region']
@@ -378,7 +384,9 @@ class EADFResolver:
             'overall_status': 'success' if all_stages_success else 'partial_failure',
             'deployment_timestamp': datetime.now().isoformat(),
             'total_stages': 7,
-            'successful_stages': sum(1 for s in self.provenance['stages'].values() if s.get('status') == 'success')
+            'successful_stages': sum(1 for s in self.provenance['stages'].values() if s.get('status') == 'success'),
+            'execution_mode': 'simulated',
+            'secret_resolution': 'mock' if getattr(self, 'mock_secret_count', 0) else 'none'
         }
         
         # Store provenance
@@ -393,6 +401,8 @@ class EADFResolver:
     def _resolve_templates(self, config: Dict) -> Dict:
         """Resolve template variables like {{vault:secret}}"""
         # Recursive resolution to avoid JSON parsing issues
+        self.mock_secret_count = 0
+        
         def resolve_value(value):
             if isinstance(value, dict):
                 return {k: resolve_value(v) for k, v in value.items()}
@@ -406,6 +416,7 @@ class EADFResolver:
                     pattern = r'\{\{vault:([^}]+)\}\}'
                     matches = re.findall(pattern, value)
                     for secret_name in matches:
+                        self.mock_secret_count += 1
                         mock_value = f'MOCK_SECRET_{secret_name.upper()}'
                         value = value.replace(f'{{{{vault:{secret_name}}}}}', mock_value)
                 return value
@@ -443,24 +454,63 @@ class EADFResolver:
         """Build Databricks notebook artifact"""
         logger.debug("  Building Databricks notebook artifact")
     
+    def _build_adf_pipeline(self):
+        """Build Azure Data Factory pipeline artifact"""
+        # Simulate build process
+        logger.debug("  Building ADF pipeline artifact")
+    
+    def _build_dbt_project(self):
+        """Build dbt project artifact"""
+        logger.debug("  Building dbt project artifact")
+    
+    def _build_databricks_notebook(self):
+        """Build Databricks notebook artifact"""
+        logger.debug("  Building Databricks notebook artifact")
+    
+    # Target clouds each component type is declared to support. A declaration is not
+    # a deployment handler: only adf_pipeline on azure and aws has a handler, and
+    # those handlers are simulated.
+    SUPPORTED_TARGETS = {
+        'adf_pipeline': {'azure', 'aws'},
+        'dbt_project': {'azure'},
+        'databricks_notebook': {'azure'},
+    }
+    
     def _validate_schema(self):
-        """Validate artifact against schema"""
-        # Simplified validation
+        """Required fields are present and the component type is declared"""
         required_fields = ['name', 'type', 'version']
         for field in required_fields:
             if field not in self.component:
                 raise ValueError(f"Missing required field: {field}")
+        if self.component['type'] not in self.SUPPORTED_TARGETS:
+            raise ValueError(f"Unsupported component type: {self.component['type']}")
+    
+    @staticmethod
+    def _version_tuple(version: str):
+        return tuple(int(part) for part in str(version).split('.'))
     
     def _check_dependencies(self):
-        """Check that dependencies are satisfied"""
-        dependencies = self.component.get('depends_on', [])
-        # In production: verify dependencies are deployed with minimum versions
-        logger.debug(f"  Checking {len(dependencies)} dependencies")
+        """Each dependency must be a component in this repository at or above min_version.
+
+        Dependencies outside the repository cannot be verified and fail the check.
+        """
+        for dependency in self.component.get('depends_on', []) or []:
+            name = dependency.get('name') if isinstance(dependency, dict) else None
+            if not isinstance(name, str):
+                raise ValueError(f"Malformed dependency entry: {dependency}")
+            dependency_path = Path('components') / name / 'component.yaml'
+            if not dependency_path.exists():
+                raise ValueError(f"Dependency not verifiable in repository: {name}")
+            dependency_version = self._load_yaml(str(dependency_path))['version']
+            minimum = dependency.get('min_version', '0.0.0')
+            if self._version_tuple(dependency_version) < self._version_tuple(minimum):
+                raise ValueError(f"Dependency {name} is {dependency_version}, below {minimum}")
     
     def _verify_compatibility(self):
-        """Verify compatibility with target environment"""
-        # Check component type is supported in target cloud
-        logger.debug("  Verifying compatibility")
+        """The target cloud must be one the component type is declared to support"""
+        cloud = self.bindings['environment']['cloud']
+        if cloud not in self.SUPPORTED_TARGETS[self.component['type']]:
+            raise ValueError(f"{self.component['type']} is not declared for cloud {cloud}")
     
     def _deploy_adf_to_azure(self):
         """Deploy ADF pipeline to Azure"""
@@ -473,91 +523,86 @@ class EADFResolver:
         logger.debug("  Deploying to AWS Step Functions")
     
     def _smoke_test_row_count(self, config: Dict) -> Dict:
-        """Execute row count smoke test"""
-        # Simulate checking row count
-        import random
-        random.seed(42)  # For reproducibility
-        row_count = random.randint(100, 10000)
+        """Row count smoke test against the row count recorded in the evidence file"""
         expected_min = config.get('expected_min', 1)
-        
+        row_count = self.env_evidence.get('row_count')
+        if not isinstance(row_count, int):
+            return {
+                'passed': False,
+                'status': 'not_run',
+                'message': f"Row count not recorded in evidence (expected min: {expected_min})"
+            }
         passed = row_count >= expected_min
         return {
             'passed': passed,
+            'status': 'passed' if passed else 'failed',
             'message': f"Row count: {row_count} (expected min: {expected_min})"
         }
     
     def _smoke_test_pipeline_status(self, config: Dict) -> Dict:
-        """Check pipeline execution status"""
-        # Simulate checking pipeline status
-        import random
-        random.seed(42)
-        passed = random.random() > 0.05  # 95% success rate
-        
+        """Pipeline status smoke test against the status recorded in the evidence file"""
+        status = self.env_evidence.get('pipeline_status')
+        passed = status == 'Succeeded'
         return {
             'passed': passed,
-            'message': "Pipeline status: Active" if passed else "Pipeline status: Failed"
+            'status': 'passed' if passed else 'not_run',
+            'message': f"Pipeline status: {status if status is not None else 'not recorded'}"
         }
 
     def _smoke_test_dbt(self, config: Dict) -> Dict:
-        """Run dbt smoke tests (simulate dbt test run)"""
-        import random
-        random.seed(42)
-        tests_run = config.get('run_tests', True)
-        passed = random.random() > 0.05  # 95% success rate
-        
+        """dbt test smoke test against the result recorded in the evidence file"""
+        result = self.env_evidence.get('dbt_tests')
+        passed = result == 'passed'
         return {
             'passed': passed,
-            'message': (
-                f"dbt tests {'executed' if tests_run else 'skipped'} - "
-                f"{'all passed' if passed else 'some failed'}"
-            )
+            'status': 'passed' if passed else 'not_run',
+            'message': f"dbt tests: {result if result is not None else 'not recorded'}"
         }
 
     def _smoke_test_notebook(self, config: Dict) -> Dict:
-        """Run Databricks notebook smoke test"""
-        import random
-        random.seed(42)
-        validate_output = config.get('validate_output', True)
-        passed = random.random() > 0.1  # 90% success rate
-        
+        """Notebook run smoke test against the result recorded in the evidence file"""
+        result = self.env_evidence.get('notebook_run')
+        passed = result == 'passed'
         return {
             'passed': passed,
-            'message': (
-                f"Notebook run {'validated' if validate_output else 'executed'} - "
-                f"{'success' if passed else 'error detected'}"
-            )
+            'status': 'passed' if passed else 'not_run',
+            'message': f"Notebook run: {result if result is not None else 'not recorded'}"
         }
 
-    
     def _get_promotion_key(self, current_env: str) -> Optional[str]:
-        """Determine promotion path from current environment"""
-        promotion_map = {
-            'dev': 'dev_to_sit',
-            'sit': 'sit_to_uat',
-            'uat': 'uat_to_prod'
-        }
-        return promotion_map.get(current_env)
+        """Return the promotion rule that starts at current_env, read from promotion.yaml.
+
+        Rule keys have the form "<from>_to_<to>". No environment mapping is hard-coded.
+        """
+        for key in self.promotion.get('promotion_rules', {}) or {}:
+            source, separator, _target = key.partition('_to_')
+            if separator and source == current_env:
+                return key
+        return None
     
     def _evaluate_gate(self, gate: Dict) -> Dict:
-        """Evaluate a single promotion gate"""
+        """Evaluate one promotion gate against supplied evidence (fail closed).
+
+        Automated gates pass only if the evidence file records 'passed' for the gate
+        in the current environment. Manual gates pass only if the evidence file names
+        an approver. Anything else is recorded as not evaluated or pending approval.
+        """
         gate_type = gate.get('type', 'automated')
+        value = self.env_evidence.get(gate['name'])
         
-        if gate_type == 'automated':
-            # Simulate automated check (e.g., tests passed)
-            import random
-            random.seed(42)
-            passed = random.random() > 0.1  # 90% pass rate
+        if gate_type == 'manual':
+            passed = isinstance(value, str) and value.strip() != ''
+            status = 'approved' if passed else 'pending_approval'
         else:
-            # Manual gate - simulate approval
-            import random
-            random.seed(42)
-            passed = random.random() > 0.2  # 80% approval rate
+            passed = value == 'passed'
+            status = 'passed' if passed else 'not_evaluated'
         
         return {
             'gate_name': gate['name'],
             'gate_type': gate_type,
             'passed': passed,
-            'message': f"{'Passed' if passed else 'Failed'}"
+            'status': status,
+            'message': status
         }
     
     def _store_provenance(self):
