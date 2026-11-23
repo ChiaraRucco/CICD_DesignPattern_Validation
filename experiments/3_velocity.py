@@ -56,25 +56,21 @@ def measure_deployment_time(n_deployments=10):
     print(f"Min/Max: {metrics['min_time']:.3f}s / {metrics['max_time']:.3f}s")
     print(f"Success rate: {metrics['success_rate']:.1f}%")
     
-    # Baseline comparison (simulated)
-    baseline_time = 0.5  # Baseline takes longer
-    improvement = (1 - metrics['median_time'] / baseline_time) * 100
+    # The 0.5 s "baseline" is a constant written into this script, not a measurement.
+    # No improvement percentage is computed from it.
+    baseline_time = 0.5
     
-    print(f"\nComparison to baseline:")
-    print(f"  Baseline: {baseline_time:.3f}s")
-    print(f"  EADF: {metrics['median_time']:.3f}s")
-    print(f"  Improvement: {improvement:.1f}%")
+    print(f"\nLocal resolver timing (EADF only):")
+    print(f"  Median: {metrics['median_time']:.4f}s over the runs above")
+    print(f"  Constant in script (not measured): {baseline_time:.3f}s")
     
     # Save results
     Path("results").mkdir(exist_ok=True)
     with open("results/velocity_metrics.json", 'w') as f:
         json.dump({
             'metrics': metrics,
-            'baseline_time': baseline_time,
-            'improvements': {
-                'duration_reduction_pct': improvement,
-                'success_rate_improvement': metrics['success_rate'] - 85.0  # Baseline 85%
-            }
+            'constant_baseline_time_not_measured': baseline_time,
+            'note': 'Timings of the local resolver only. No improvement is reported against a constant.'
         }, f, indent=2)
     
     print("\n✓ Results saved to: results/velocity_metrics.json")
