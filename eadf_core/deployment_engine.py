@@ -11,7 +11,6 @@ from eadf_core.environment_simulator import EnvironmentSimulator
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 import json
-import random
 from datetime import datetime
 import logging
 
@@ -191,7 +190,7 @@ class DeploymentEngine:
             logger.info(f"  📋 Evaluating promotion policy: {promotion_key}")
             
             # Simulate gate checks
-            gates_passed = self._evaluate_promotion_gates(promotion_key, simulate_failure)
+            gates_passed = self._evaluate_promotion_gates(component_path, from_env, simulate_failure)
             
             if not gates_passed:
                 promotion_record['status'] = 'blocked'
@@ -341,22 +340,23 @@ class DeploymentEngine:
         
         return artifact_path
     
-    def _evaluate_promotion_gates(self, promotion_key: str, simulate_failure: Optional[str]) -> bool:
-        """Evaluate promotion gates"""
+    def _evaluate_promotion_gates(self, component_path: str, from_env: str,
+                                  simulate_failure: Optional[str]) -> bool:
+        """Evaluate the promotion gates of from_env with the resolver's gate logic"""
         if simulate_failure == 'gate':
-            logger.error(f"    ✗ Gate: manual_approval - FAILED (simulated)")
+            logger.error(f"    ✗ Gate evaluation - FAILED (simulated)")
             return False
         
-        # Simulate gate evaluation
-        gates = ['automated_tests', 'code_review', 'manual_approval']
+        resolver = EADFResolver(component_path, from_env)
+        promotion_key = resolver._get_promotion_key(from_env)
+        if promotion_key is None:
+            return False
         
-        for gate in gates:
-            # Simulate gate check
-            passed = random.random() > 0.05  # 95% pass rate
-            icon = "✓" if passed else "✗"
-            logger.info(f"    {icon} Gate: {gate}")
-            
-            if not passed:
+        for gate in resolver.promotion['promotion_rules'][promotion_key].get('gates', []):
+            result = resolver._evaluate_gate(gate)
+            icon = "✓" if result['passed'] else "✗"
+            logger.info(f"    {icon} Gate: {gate['name']} ({result['status']})")
+            if not result['passed']:
                 return False
         
         return True

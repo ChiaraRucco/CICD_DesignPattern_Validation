@@ -32,6 +32,13 @@ class EADFResolver:
         self.pipeline = self._load_yaml("ci/pattern/pipeline.yaml")
         self.promotion = self._load_yaml("ci/pattern/promotion.yaml")
         
+        # Evidence supplied with the component (gate and smoke-test inputs).
+        # Missing evidence is treated as "not evaluated", never as a pass.
+        evidence_path = self.component_path.parent / 'evidence.yaml'
+        self.evidence = self._load_yaml(str(evidence_path)) if evidence_path.exists() else {}
+        environments_evidence = (self.evidence or {}).get('environments') or {}
+        self.env_evidence = environments_evidence.get(environment_name) or {}
+        
         # Execution state
         self.bindings = {}
         self.execution_log = []
@@ -530,34 +537,39 @@ class EADFResolver:
 
     
     def _get_promotion_key(self, current_env: str) -> Optional[str]:
-        """Determine promotion path from current environment"""
-        promotion_map = {
-            'dev': 'dev_to_sit',
-            'sit': 'sit_to_uat',
-            'uat': 'uat_to_prod'
-        }
-        return promotion_map.get(current_env)
+        """Return the promotion rule that starts at current_env, read from promotion.yaml.
+
+        Rule keys have the form "<from>_to_<to>". No environment mapping is hard-coded.
+        """
+        for key in self.promotion.get('promotion_rules', {}) or {}:
+            source, separator, _target = key.partition('_to_')
+            if separator and source == current_env:
+                return key
+        return None
     
     def _evaluate_gate(self, gate: Dict) -> Dict:
-        """Evaluate a single promotion gate"""
+        """Evaluate one promotion gate against supplied evidence (fail closed).
+
+        Automated gates pass only if the evidence file records 'passed' for the gate
+        in the current environment. Manual gates pass only if the evidence file names
+        an approver. Anything else is recorded as not evaluated or pending approval.
+        """
         gate_type = gate.get('type', 'automated')
+        value = self.env_evidence.get(gate['name'])
         
-        if gate_type == 'automated':
-            # Simulate automated check (e.g., tests passed)
-            import random
-            random.seed(42)
-            passed = random.random() > 0.1  # 90% pass rate
+        if gate_type == 'manual':
+            passed = isinstance(value, str) and value.strip() != ''
+            status = 'approved' if passed else 'pending_approval'
         else:
-            # Manual gate - simulate approval
-            import random
-            random.seed(42)
-            passed = random.random() > 0.2  # 80% approval rate
+            passed = value == 'passed'
+            status = 'passed' if passed else 'not_evaluated'
         
         return {
             'gate_name': gate['name'],
             'gate_type': gate_type,
             'passed': passed,
-            'message': f"{'Passed' if passed else 'Failed'}"
+            'status': status,
+            'message': status
         }
     
     def _store_provenance(self):

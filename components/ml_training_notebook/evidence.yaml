@@ -1,0 +1,24 @@
+# Evidence supplied for promotion gates and smoke tests.
+# SYNTHETIC DEMO INPUTS: these values are controlled test inputs, not outputs of real
+# test runs or approvals. Gates pass only when a value is recorded here; remove a
+# value and the gate fails closed (not_evaluated / pending_approval).
+synthetic: true
+environments:
+  dev:
+    notebook_run: passed
+    smoke_tests_passed: passed
+    unit_tests_passed: passed
+    code_review_approved: "synthetic-reviewer"
+  sit:
+    notebook_run: passed
+    integration_tests_passed: passed
+    data_quality_checks: passed
+    tech_lead_approval: "synthetic-tech-lead"
+  uat:
+    notebook_run: passed
+    uat_sign_off: "synthetic-product-owner"
+    performance_tests_passed: passed
+    security_scan_passed: passed
+    change_approval_board: "synthetic-cab"
+  prod:
+    notebook_run: passed
