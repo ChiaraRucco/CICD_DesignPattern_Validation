@@ -186,27 +186,25 @@ class EADFResolver:
     def stage_validation(self):
         """
         Stage 3: Validation
-        Check artifact against schema rules and compatibility constraints
+        Check artifact against schema rules, dependencies, and target compatibility.
+        Each check either passes or raises; the record lists the checks that passed.
         """
-        logger.info(f"\n[3/7] VALIDATION - Schema and compatibility checks")
+        logger.info(f"\n[3/7] VALIDATION - Schema, dependency, and compatibility checks")
         
-        # Schema validation
         self._validate_schema()
-        
-        # Dependency validation
         self._check_dependencies()
-        
-        # Compatibility validation
         self._verify_compatibility()
         
+        checks = {'schema': 'passed', 'dependencies': 'passed', 'compatibility': 'passed'}
         logger.info(f"  ✓ Schema validation passed")
-        logger.info(f"  ✓ Dependencies satisfied")
+        logger.info(f"  ✓ Dependencies verified")
         logger.info(f"  ✓ Compatibility verified")
         
         self.provenance['stages']['validation'] = {
             'status': 'success',
             'timestamp': datetime.now().isoformat(),
-            'checks_passed': ['schema', 'dependencies', 'compatibility']
+            'checks': checks,
+            'checks_passed': [name for name, status in checks.items() if status == 'passed']
         }
     
     def stage_deployment(self):
@@ -234,6 +232,7 @@ class EADFResolver:
         
         self.provenance['stages']['deployment'] = {
             'status': 'success',
+            'execution_mode': 'simulated',
             'timestamp': datetime.now().isoformat(),
             'cloud': cloud,
             'region': self.bindings['environment']['region']
@@ -385,7 +384,9 @@ class EADFResolver:
             'overall_status': 'success' if all_stages_success else 'partial_failure',
             'deployment_timestamp': datetime.now().isoformat(),
             'total_stages': 7,
-            'successful_stages': sum(1 for s in self.provenance['stages'].values() if s.get('status') == 'success')
+            'successful_stages': sum(1 for s in self.provenance['stages'].values() if s.get('status') == 'success'),
+            'execution_mode': 'simulated',
+            'secret_resolution': 'mock' if getattr(self, 'mock_secret_count', 0) else 'none'
         }
         
         # Store provenance
@@ -400,6 +401,8 @@ class EADFResolver:
     def _resolve_templates(self, config: Dict) -> Dict:
         """Resolve template variables like {{vault:secret}}"""
         # Recursive resolution to avoid JSON parsing issues
+        self.mock_secret_count = 0
+        
         def resolve_value(value):
             if isinstance(value, dict):
                 return {k: resolve_value(v) for k, v in value.items()}
@@ -413,6 +416,7 @@ class EADFResolver:
                     pattern = r'\{\{vault:([^}]+)\}\}'
                     matches = re.findall(pattern, value)
                     for secret_name in matches:
+                        self.mock_secret_count += 1
                         mock_value = f'MOCK_SECRET_{secret_name.upper()}'
                         value = value.replace(f'{{{{vault:{secret_name}}}}}', mock_value)
                 return value
@@ -450,24 +454,63 @@ class EADFResolver:
         """Build Databricks notebook artifact"""
         logger.debug("  Building Databricks notebook artifact")
     
+    def _build_adf_pipeline(self):
+        """Build Azure Data Factory pipeline artifact"""
+        # Simulate build process
+        logger.debug("  Building ADF pipeline artifact")
+    
+    def _build_dbt_project(self):
+        """Build dbt project artifact"""
+        logger.debug("  Building dbt project artifact")
+    
+    def _build_databricks_notebook(self):
+        """Build Databricks notebook artifact"""
+        logger.debug("  Building Databricks notebook artifact")
+    
+    # Target clouds each component type is declared to support. A declaration is not
+    # a deployment handler: only adf_pipeline on azure and aws has a handler, and
+    # those handlers are simulated.
+    SUPPORTED_TARGETS = {
+        'adf_pipeline': {'azure', 'aws'},
+        'dbt_project': {'azure'},
+        'databricks_notebook': {'azure'},
+    }
+    
     def _validate_schema(self):
-        """Validate artifact against schema"""
-        # Simplified validation
+        """Required fields are present and the component type is declared"""
         required_fields = ['name', 'type', 'version']
         for field in required_fields:
             if field not in self.component:
                 raise ValueError(f"Missing required field: {field}")
+        if self.component['type'] not in self.SUPPORTED_TARGETS:
+            raise ValueError(f"Unsupported component type: {self.component['type']}")
+    
+    @staticmethod
+    def _version_tuple(version: str):
+        return tuple(int(part) for part in str(version).split('.'))
     
     def _check_dependencies(self):
-        """Check that dependencies are satisfied"""
-        dependencies = self.component.get('depends_on', [])
-        # In production: verify dependencies are deployed with minimum versions
-        logger.debug(f"  Checking {len(dependencies)} dependencies")
+        """Each dependency must be a component in this repository at or above min_version.
+
+        Dependencies outside the repository cannot be verified and fail the check.
+        """
+        for dependency in self.component.get('depends_on', []) or []:
+            name = dependency.get('name') if isinstance(dependency, dict) else None
+            if not isinstance(name, str):
+                raise ValueError(f"Malformed dependency entry: {dependency}")
+            dependency_path = Path('components') / name / 'component.yaml'
+            if not dependency_path.exists():
+                raise ValueError(f"Dependency not verifiable in repository: {name}")
+            dependency_version = self._load_yaml(str(dependency_path))['version']
+            minimum = dependency.get('min_version', '0.0.0')
+            if self._version_tuple(dependency_version) < self._version_tuple(minimum):
+                raise ValueError(f"Dependency {name} is {dependency_version}, below {minimum}")
     
     def _verify_compatibility(self):
-        """Verify compatibility with target environment"""
-        # Check component type is supported in target cloud
-        logger.debug("  Verifying compatibility")
+        """The target cloud must be one the component type is declared to support"""
+        cloud = self.bindings['environment']['cloud']
+        if cloud not in self.SUPPORTED_TARGETS[self.component['type']]:
+            raise ValueError(f"{self.component['type']} is not declared for cloud {cloud}")
     
     def _deploy_adf_to_azure(self):
         """Deploy ADF pipeline to Azure"""
