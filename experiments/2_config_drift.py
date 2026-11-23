@@ -102,18 +102,14 @@ def main():
     baseline_drift = test_baseline_drift()
     eadf_drift = test_eadf_consistency()
     
-    # Calculate improvement
-    if baseline_drift > 0:
-        reduction = (1 - eadf_drift / baseline_drift) * 100
-    else:
-        reduction = 0
-    
     print("\n" + "=" * 70)
     print("DRIFT ANALYSIS SUMMARY")
     print("=" * 70)
     print(f"Baseline Drift Incidents: {baseline_drift}")
-    print(f"EADF Drift Incidents: {eadf_drift}")
-    print(f"Drift Reduction: {reduction:.0f}%")
+    print(f"EADF Catalog Issues: {eadf_drift}")
+    print("Note: the baseline is two hand-written configs and the catalog check counts")
+    print("missing keys in the illustrative prod_aws entry. The counts are not a")
+    print("like-for-like reduction, so no percentage is reported.")
     
     # Save results
     Path("results").mkdir(exist_ok=True)
@@ -121,7 +117,7 @@ def main():
         json.dump({
             'baseline_drift': baseline_drift,
             'eadf_issues': eadf_drift,
-            'drift_reduction_percent': reduction
+            'note': 'Counts of missing parameter keys; not a like-for-like reduction. No percentage reported.'
         }, f, indent=2)
     
     print("\n✓ Results saved to: results/config_drift_results.json")
