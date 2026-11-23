@@ -121,9 +121,9 @@
   "validations": {
     "mix_ins_load_successfully": true,
     "notifications_work_when_enabled": true,
-    "data_quality_works_when_enabled": true,
+    "data_quality_works_when_enabled": false,
     "mix_ins_compose_without_conflict": true,
     "mix_ins_are_optional": true
   },
-  "all_passed": true
+  "all_passed": false
 }

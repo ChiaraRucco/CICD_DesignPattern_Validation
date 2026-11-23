@@ -94,11 +94,11 @@ All eleven scripts exit with status 0. The runner reports exit status, not the v
 | 6 | `6_deployment_success.py` | `deployment_success.json` | Promotion of 4 components through dev, sit, uat, prod | **3 of 4** complete the chain (`analytics_dbt`, `customer_orders_pipeline`, `ml_training_notebook`). `inventory_sync_pipeline` fails validation because its dependencies are outside the repository. Validation checks "All components deployed" and "Environment consistency" report **FAIL** |
 | 7 | `7_deployment_failures.py` | `deployment_failures.json` | Injected smoke-test, gate, and deployment failures | Failures recorded and promotions blocked. No rollback is recorded in the failure records |
 | 8 | `8_environment_state.py` | `environment_inspection.json` | Files and state written under `environments/` | Components and state present in each environment |
-| 9 | `9_mixin_composition.py` | `mixin_composition.json` | Combinations of mix-ins | Notifications are logged. Data-quality checks report `not_evaluated` because this experiment supplies no evidence |
+| 9 | `9_mixin_composition.py` | `mixin_composition.json` | Combinations of mix-ins | Notifications are logged. Data-quality checks report `not_evaluated` because this experiment supplies no evidence, so the data-quality validation reports **FAIL** |
 | 10 | `10_component_types.py` | `component_type_branching.json` | Dispatch labels chosen per component type | Labels selected as declared. No dbt or Databricks deployment handler exists |
 | 11 | `11_complexity_metrics.py` | `complexity_metrics.json` | Static size and cyclomatic complexity of the resolver and the configuration | Resolver **477** code lines, complexity **85**; configuration **319** code lines. Three comparison checks against the Jenkins, GitHub Actions, and script baselines report **FAIL**. Those baselines are hard-coded estimates in the script |
 
-Experiment 6 checks two items that fail, as described above. Experiment 11 checks three comparisons that fail. Both are reported as they are.
+Experiment 6 checks two items that fail, as described above. Experiment 9 has one check that fails (data quality, no evidence supplied). Experiment 11 checks three comparisons that fail. All are reported as they are.
 
 ## Tests
 
